@@ -175,145 +175,257 @@ class _LoginScreenState extends State<LoginScreen>
                       ),
                     ),
 
-                    SizedBox(height: 4.h),
+                    SizedBox(height: 5.h),
 
-                    // Email Field
-                    Text(
-                      'Email Address',
-                      style: GoogleFonts.inter(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textPrimaryLight,
+                    // Email Field with improved UX
+                    Container(
+                      padding: EdgeInsets.only(bottom: 0.5.h),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.email_outlined,
+                            color: AppTheme.primaryLight,
+                            size: 18,
+                          ),
+                          SizedBox(width: 1.w),
+                          Text(
+                            'Email Address',
+                            style: GoogleFonts.inter(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.textPrimaryLight,
+                              letterSpacing: -0.2,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 1.h),
+                    SizedBox(height: 1.2.h),
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
                       style: GoogleFonts.inter(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
                         color: AppTheme.textPrimaryLight,
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Enter your email',
+                        labelText: 'Your email address',
+                        labelStyle: GoogleFonts.inter(
+                          color: AppTheme.textLabelLight,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        hintText: 'example@email.com',
                         hintStyle: GoogleFonts.inter(
                           color: AppTheme.textLabelLight,
                           fontWeight: FontWeight.w400,
+                          fontSize: 15.sp,
                         ),
-                        prefixIcon: Icon(
-                          Icons.email_outlined,
-                          color: AppTheme.primaryLight,
+                        helperText: 'Enter the email address you registered with',
+                        helperStyle: GoogleFonts.inter(
+                          color: AppTheme.textLabelLight,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        prefixIcon: Container(
+                          margin: EdgeInsets.all(1.2.w),
+                          padding: EdgeInsets.all(1.2.w),
+                          decoration: BoxDecoration(
+                            color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.email_outlined,
+                            color: AppTheme.primaryLight,
+                            size: 20,
+                          ),
                         ),
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(18),
                           borderSide: BorderSide(
-                            color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                            color: AppTheme.primaryLight.withValues(alpha: 0.2),
+                            width: 1.5,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(18),
                           borderSide: BorderSide(
-                            color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                            color: AppTheme.primaryLight.withValues(alpha: 0.2),
+                            width: 1.5,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(18),
                           borderSide: BorderSide(
                             color: AppTheme.primaryLight,
-                            width: 2,
+                            width: 2.5,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide(
+                            color: AppTheme.errorLight,
+                            width: 1.5,
+                          ),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide(
+                            color: AppTheme.errorLight,
+                            width: 2.5,
                           ),
                         ),
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 4.w,
-                          vertical: 2.h,
+                          vertical: 2.2.h,
                         ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
+                          return 'Email is required to sign in';
                         }
-                        if (!value.contains('@')) {
-                          return 'Please enter a valid email';
+                        if (!value.contains('@') || !value.contains('.')) {
+                          return 'Please enter a valid email address';
                         }
                         return null;
                       },
                     ),
 
-                    SizedBox(height: 2.h),
+                    SizedBox(height: 3.h),
 
-                    // Password Field
-                    Text(
-                      'Password',
-                      style: GoogleFonts.inter(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textPrimaryLight,
+                    // Password Field with improved UX
+                    Container(
+                      padding: EdgeInsets.only(bottom: 0.5.h),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.lock_outline,
+                            color: AppTheme.primaryLight,
+                            size: 18,
+                          ),
+                          SizedBox(width: 1.w),
+                          Text(
+                            'Password',
+                            style: GoogleFonts.inter(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.textPrimaryLight,
+                              letterSpacing: -0.2,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 1.h),
+                    SizedBox(height: 1.2.h),
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (_) => _signIn(),
                       style: GoogleFonts.inter(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
                         color: AppTheme.textPrimaryLight,
                       ),
                       decoration: InputDecoration(
+                        labelText: 'Your password',
+                        labelStyle: GoogleFonts.inter(
+                          color: AppTheme.textLabelLight,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
                         hintText: 'Enter your password',
                         hintStyle: GoogleFonts.inter(
                           color: AppTheme.textLabelLight,
                           fontWeight: FontWeight.w400,
+                          fontSize: 15.sp,
                         ),
-                        prefixIcon: Icon(
-                          Icons.lock_outline,
-                          color: AppTheme.primaryLight,
+                        helperText: 'Must be at least 6 characters long',
+                        helperStyle: GoogleFonts.inter(
+                          color: AppTheme.textLabelLight,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
                         ),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
-                          },
-                          icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            color: AppTheme.textSecondaryLight,
+                        prefixIcon: Container(
+                          margin: EdgeInsets.all(1.2.w),
+                          padding: EdgeInsets.all(1.2.w),
+                          decoration: BoxDecoration(
+                            color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.lock_outline,
+                            color: AppTheme.primaryLight,
+                            size: 20,
+                          ),
+                        ),
+                        suffixIcon: Container(
+                          margin: EdgeInsets.only(right: 1.w),
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                              color: AppTheme.textSecondaryLight,
+                              size: 22,
+                            ),
+                            tooltip: _obscurePassword ? 'Show password' : 'Hide password',
                           ),
                         ),
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(18),
                           borderSide: BorderSide(
-                            color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                            color: AppTheme.primaryLight.withValues(alpha: 0.2),
+                            width: 1.5,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(18),
                           borderSide: BorderSide(
-                            color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                            color: AppTheme.primaryLight.withValues(alpha: 0.2),
+                            width: 1.5,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(18),
                           borderSide: BorderSide(
                             color: AppTheme.primaryLight,
-                            width: 2,
+                            width: 2.5,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide(
+                            color: AppTheme.errorLight,
+                            width: 1.5,
+                          ),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide(
+                            color: AppTheme.errorLight,
+                            width: 2.5,
                           ),
                         ),
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 4.w,
-                          vertical: 2.h,
+                          vertical: 2.2.h,
                         ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
+                          return 'Password is required to sign in';
                         }
                         if (value.length < 6) {
                           return 'Password must be at least 6 characters';
@@ -322,16 +434,29 @@ class _LoginScreenState extends State<LoginScreen>
                       },
                     ),
 
-                    SizedBox(height: 4.h),
+                    SizedBox(height: 4.5.h),
 
-                    // Sign In Button
+                    // Sign In Button with improved design
                     Container(
                       width: double.infinity,
-                      height: 6.h,
+                      height: 6.5.h,
                       decoration: BoxDecoration(
                         gradient: AppTheme.getPrimaryGradient(),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: AppTheme.getElevatedShadow(),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppTheme.primaryLight.withValues(alpha: 0.4),
+                            offset: Offset(0, 6),
+                            blurRadius: 20,
+                            spreadRadius: 0,
+                          ),
+                          BoxShadow(
+                            color: AppTheme.primaryLight.withValues(alpha: 0.2),
+                            offset: Offset(0, 3),
+                            blurRadius: 10,
+                            spreadRadius: 0,
+                          ),
+                        ],
                       ),
                       child: ElevatedButton(
                         onPressed: _isLoading ? null : _signIn,
@@ -339,41 +464,76 @@ class _LoginScreenState extends State<LoginScreen>
                           backgroundColor: Colors.transparent,
                           shadowColor: Colors.transparent,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(20),
                           ),
+                          elevation: 0,
                         ),
                         child: _isLoading
-                            ? SizedBox(
-                                width: 6.w,
-                                height: 6.w,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 5.w,
+                                    height: 5.w,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 3,
+                                    ),
+                                  ),
+                                  SizedBox(width: 3.w),
+                                  Text(
+                                    'Signing in...',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                      letterSpacing: -0.2,
+                                    ),
+                                  ),
+                                ],
                               )
-                            : Text(
-                                'Sign In',
-                                style: GoogleFonts.inter(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                  letterSpacing: -0.2,
-                                ),
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.login_rounded,
+                                    color: Colors.white,
+                                    size: 22,
+                                  ),
+                                  SizedBox(width: 2.w),
+                                  Text(
+                                    'Sign In to Continue',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 17.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      letterSpacing: -0.3,
+                                    ),
+                                  ),
+                                ],
                               ),
                       ),
                     ),
 
                     SizedBox(height: 4.h),
 
-                    // Demo Credentials Section
+                    // Demo Credentials Section with improved design
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(4.w),
+                      padding: EdgeInsets.all(5.w),
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppTheme.primaryLight.withValues(alpha: 0.08),
+                            AppTheme.primaryLight.withValues(alpha: 0.03),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                          color: AppTheme.primaryLight.withValues(alpha: 0.2),
+                          width: 1.5,
                         ),
                         boxShadow: AppTheme.getSoftShadow(),
                       ),
@@ -382,32 +542,47 @@ class _LoginScreenState extends State<LoginScreen>
                         children: [
                           Row(
                             children: [
-                              Icon(
-                                Icons.info_outline,
-                                color: AppTheme.primaryLight,
-                                size: 20,
+                              Container(
+                                padding: EdgeInsets.all(1.2.w),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primaryLight.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Icon(
+                                  Icons.info_outline_rounded,
+                                  color: AppTheme.primaryLight,
+                                  size: 22,
+                                ),
                               ),
-                              SizedBox(width: 2.w),
-                              Text(
-                                'Demo Credentials',
-                                style: GoogleFonts.inter(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppTheme.textPrimaryLight,
+                              SizedBox(width: 3.w),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Quick Test Login',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppTheme.textPrimaryLight,
+                                        letterSpacing: -0.2,
+                                      ),
+                                    ),
+                                    SizedBox(height: 0.3.h),
+                                    Text(
+                                      'Tap any account below to auto-fill',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 11.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppTheme.textSecondaryLight,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            'Use these credentials to test the application:',
-                            style: GoogleFonts.inter(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppTheme.textSecondaryLight,
-                            ),
-                          ),
-                          SizedBox(height: 1.5.h),
+                          SizedBox(height: 2.5.h),
                           ..._authService
                               .getDemoCredentials()
                               .map(
@@ -418,37 +593,71 @@ class _LoginScreenState extends State<LoginScreen>
                                   ),
                                   child: Container(
                                     width: double.infinity,
-                                    padding: EdgeInsets.all(3.w),
-                                    margin: EdgeInsets.only(bottom: 1.h),
+                                    padding: EdgeInsets.all(4.w),
+                                    margin: EdgeInsets.only(bottom: 1.5.h),
                                     decoration: BoxDecoration(
-                                      color: AppTheme.primaryLight
-                                          .withValues(alpha: 0.05),
-                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
                                       border: Border.all(
                                         color: AppTheme.primaryLight
-                                            .withValues(alpha: 0.1),
+                                            .withValues(alpha: 0.15),
+                                        width: 1.5,
                                       ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: AppTheme.primaryLight
+                                              .withValues(alpha: 0.08),
+                                          offset: Offset(0, 2),
+                                          blurRadius: 8,
+                                        ),
+                                      ],
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                    child: Row(
                                       children: [
-                                        Text(
-                                          '${cred['role']} - ${cred['name']}',
-                                          style: GoogleFonts.inter(
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppTheme.textPrimaryLight,
+                                        Container(
+                                          padding: EdgeInsets.all(2.5.w),
+                                          decoration: BoxDecoration(
+                                            color: AppTheme.primaryLight
+                                                .withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Icon(
+                                            Icons.person_outline_rounded,
+                                            color: AppTheme.primaryLight,
+                                            size: 20,
                                           ),
                                         ),
-                                        SizedBox(height: 0.5.h),
-                                        Text(
-                                          '${cred['email']} / ${cred['password']}',
-                                          style: GoogleFonts.inter(
-                                            fontSize: 11.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppTheme.textSecondaryLight,
+                                        SizedBox(width: 3.w),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '${cred['role']} - ${cred['name']}',
+                                                style: GoogleFonts.inter(
+                                                  fontSize: 13.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: AppTheme.textPrimaryLight,
+                                                  letterSpacing: -0.2,
+                                                ),
+                                              ),
+                                              SizedBox(height: 0.5.h),
+                                              Text(
+                                                cred['email']!,
+                                                style: GoogleFonts.inter(
+                                                  fontSize: 11.5.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: AppTheme.textSecondaryLight,
+                                                ),
+                                              ),
+                                            ],
                                           ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: AppTheme.primaryLight,
+                                          size: 16,
                                         ),
                                       ],
                                     ),

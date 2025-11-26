@@ -185,31 +185,88 @@ class _MainDashboardState extends State<MainDashboard>
             )
           : _error != null
               ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 60,
-                        color: AppTheme.errorLight,
-                      ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        'Error Loading Dashboard',
-                        style: AppTheme.lightTheme.textTheme.headlineSmall,
-                      ),
-                      SizedBox(height: 1.h),
-                      Text(
-                        _error!,
-                        textAlign: TextAlign.center,
-                        style: AppTheme.lightTheme.textTheme.bodyMedium,
-                      ),
-                      SizedBox(height: 3.h),
-                      ElevatedButton(
-                        onPressed: _loadDashboardData,
-                        child: Text('Retry'),
-                      ),
-                    ],
+                  child: Padding(
+                    padding: EdgeInsets.all(8.w),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(5.w),
+                          decoration: BoxDecoration(
+                            color: AppTheme.errorLight.withValues(alpha: 0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.error_outline_rounded,
+                            size: 60,
+                            color: AppTheme.errorLight,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          'Unable to Load Dashboard',
+                          style: GoogleFonts.inter(
+                            fontSize: 22.sp,
+                            fontWeight: FontWeight.w800,
+                            color: AppTheme.textPrimaryLight,
+                            letterSpacing: -0.5,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 2.h),
+                        Text(
+                          'We couldn\'t fetch your dashboard data. Please check your internet connection and try again.',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppTheme.textSecondaryLight,
+                            height: 1.6,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Container(
+                          width: 60.w,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                AppTheme.primaryLight,
+                                AppTheme.primaryVariantLight,
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppTheme.primaryLight.withValues(alpha: 0.4),
+                                offset: Offset(0, 6),
+                                blurRadius: 20,
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton.icon(
+                            onPressed: _loadDashboardData,
+                            icon: Icon(Icons.refresh_rounded, color: Colors.white),
+                            label: Text(
+                              'Try Again',
+                              style: GoogleFonts.inter(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 4.w),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              elevation: 0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 )
               : RefreshIndicator(
@@ -315,21 +372,48 @@ class _MainDashboardState extends State<MainDashboard>
 
                               SizedBox(height: 4.h),
 
-                              // Quick Actions Section
+                              // Quick Actions Section with improved design
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 4.w),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.all(1.5.w),
+                                          decoration: BoxDecoration(
+                                            color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Icon(
+                                            Icons.flash_on_rounded,
+                                            color: AppTheme.primaryLight,
+                                            size: 22,
+                                          ),
+                                        ),
+                                        SizedBox(width: 3.w),
+                                        Text(
+                                          'Quick Actions',
+                                          style: GoogleFonts.inter(
+                                            fontSize: 22.sp,
+                                            fontWeight: FontWeight.w800,
+                                            color: AppTheme.textPrimaryLight,
+                                            letterSpacing: -0.5,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 0.5.h),
                                     Text(
-                                      'Quick Actions',
+                                      'Tap to quickly access common tasks',
                                       style: GoogleFonts.inter(
-                                        fontSize: 20.sp,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppTheme.textPrimaryLight,
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppTheme.textSecondaryLight,
                                       ),
                                     ),
-                                    SizedBox(height: 2.h),
+                                    SizedBox(height: 3.h),
                                     Row(
                                       children: [
                                         Expanded(
@@ -383,7 +467,7 @@ class _MainDashboardState extends State<MainDashboard>
 
                               SizedBox(height: 4.h),
 
-                              // Recent Activities Section
+                              // Recent Activities Section with improved design
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 4.w),
                                 child: Column(
@@ -393,27 +477,60 @@ class _MainDashboardState extends State<MainDashboard>
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          'Recent Activities',
-                                          style: GoogleFonts.inter(
-                                            fontSize: 20.sp,
-                                            fontWeight: FontWeight.w700,
-                                            color: AppTheme.textPrimaryLight,
-                                          ),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.all(1.5.w),
+                                              decoration: BoxDecoration(
+                                                color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                              child: Icon(
+                                                Icons.history_rounded,
+                                                color: AppTheme.primaryLight,
+                                                size: 22,
+                                              ),
+                                            ),
+                                            SizedBox(width: 3.w),
+                                            Text(
+                                              'Recent Activities',
+                                              style: GoogleFonts.inter(
+                                                fontSize: 22.sp,
+                                                fontWeight: FontWeight.w800,
+                                                color: AppTheme.textPrimaryLight,
+                                                letterSpacing: -0.5,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        TextButton(
+                                        TextButton.icon(
                                           onPressed: () => _navigateToScreen(
                                               '/activity-logs-screen'),
-                                          child: Text(
+                                          icon: Icon(
+                                            Icons.arrow_forward_rounded,
+                                            size: 16,
+                                            color: AppTheme.primaryLight,
+                                          ),
+                                          label: Text(
                                             'View All',
                                             style: GoogleFonts.inter(
                                               fontSize: 14.sp,
-                                              fontWeight: FontWeight.w500,
+                                              fontWeight: FontWeight.w600,
                                               color: AppTheme.primaryLight,
+                                              letterSpacing: -0.2,
                                             ),
                                           ),
                                         ),
                                       ],
+                                    ),
+                                    SizedBox(height: 0.5.h),
+                                    Text(
+                                      'Latest work entries and payments',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppTheme.textSecondaryLight,
+                                      ),
                                     ),
                                     SizedBox(height: 2.h),
                                     if (_recentActivities.isEmpty)
