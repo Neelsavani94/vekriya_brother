@@ -36,6 +36,30 @@ class _MainDashboardState extends State<MainDashboard>
   bool _isLoading = true;
   String? _error;
   DateTime _lastRefresh = DateTime.now();
+  final Map<String, String> _summaryOptions = const {
+    'today': 'Today',
+    'week': 'This Week',
+    'month': 'This Month',
+  };
+  String _selectedSummaryKey = 'today';
+  int _currentTipIndex = 0;
+  final List<Map<String, String>> _assistantTips = const [
+    {
+      'title': 'Record work in 2 taps',
+      'body':
+          'Use the Daily Work button below right after a piece is done to avoid guess work later.',
+    },
+    {
+      'title': 'Stay ahead of payments',
+      'body':
+          'Keep Upad entries updated so you always know who is waiting for their advance.',
+    },
+    {
+      'title': 'Keep contacts fresh',
+      'body':
+          'Adding a photo, skill level, and phone number for every karigar keeps your team organized.',
+    },
+  ];
 
   @override
   void initState() {
@@ -169,8 +193,22 @@ class _MainDashboardState extends State<MainDashboard>
     _animationController.forward();
   }
 
+  String get _summaryLabel =>
+      _summaryOptions[_selectedSummaryKey] ?? _summaryOptions.values.first;
+
   void _navigateToScreen(String routeName) {
     Navigator.pushNamed(context, routeName);
+  }
+
+  void _selectSummary(String key) {
+    if (_selectedSummaryKey == key) return;
+    setState(() => _selectedSummaryKey = key);
+  }
+
+  void _showNextTip() {
+    setState(() {
+      _currentTipIndex = (_currentTipIndex + 1) % _assistantTips.length;
+    });
   }
 
   @override
@@ -227,15 +265,33 @@ class _MainDashboardState extends State<MainDashboard>
                             children: [
                               SizedBox(height: 2.h),
 
-                              // Greeting Header
                               GreetingHeaderWidget(
                                 businessOwnerName: 'Vekariya Brothers',
                                 currentDate: _formatDate(_lastRefresh),
                               ),
 
+                              SizedBox(height: 2.5.h),
+
+                              _buildSummaryChips(),
+
+                              SizedBox(height: 1.2.h),
+
+                              _buildFriendlyInfoRow(),
+
+                              SizedBox(height: 2.h),
+
+                              _buildAssistantCard(),
+
                               SizedBox(height: 3.h),
 
-                              // Metrics Cards Section
+                              SectionHeader(
+                                title: 'Workshop Pulse',
+                                subtitle: '$_summaryLabel overview of your unit',
+                                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                              ),
+
+                              SizedBox(height: 2.h),
+
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 4.w),
                                 child: Column(
@@ -253,7 +309,7 @@ class _MainDashboardState extends State<MainDashboard>
                                             iconName: 'people',
                                             statusColor: AppTheme.primaryLight,
                                             subtitle:
-                                                '${(_dashboardStats['active_karigars'] ?? 0)} active',
+                                                '${(_dashboardStats['active_karigars'] ?? 0)} active right now',
                                             onTap: () => _navigateToScreen(
                                                 '/karigar-list-screen'),
                                           ),
@@ -261,7 +317,7 @@ class _MainDashboardState extends State<MainDashboard>
                                         SizedBox(width: 4.w),
                                         Expanded(
                                           child: MetricCardWidget(
-                                            title: 'Today\'s Work',
+                                            title: 'Work Entries',
                                             value: (_dashboardStats[
                                                         'todays_work_entries'] ??
                                                     0)
@@ -269,7 +325,7 @@ class _MainDashboardState extends State<MainDashboard>
                                             iconName: 'assignment',
                                             statusColor: AppTheme.warningLight,
                                             subtitle:
-                                                '${(_dashboardStats['todays_pieces'] ?? 0)} pieces',
+                                                '${(_dashboardStats['todays_pieces'] ?? 0)} pieces logged',
                                             onTap: () => _navigateToScreen(
                                                 '/daily-work-entry-screen'),
                                           ),
@@ -315,109 +371,31 @@ class _MainDashboardState extends State<MainDashboard>
 
                               SizedBox(height: 4.h),
 
-                              // Quick Actions Section
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Quick Actions',
-                                      style: GoogleFonts.inter(
-                                        fontSize: 20.sp,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppTheme.textPrimaryLight,
-                                      ),
-                                    ),
-                                    SizedBox(height: 2.h),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: QuickActionButtonWidget(
-                                            label: 'Add Karigar',
-                                            iconName: 'person_add',
-                                            backgroundColor: AppTheme.primaryLight,
-                                            iconColor: Colors.white,
-                                            onPressed: () => _navigateToScreen(
-                                                '/add-edit-karigar-screen'),
-                                          ),
-                                        ),
-                                        SizedBox(width: 3.w),
-                                        Expanded(
-                                          child: QuickActionButtonWidget(
-                                            label: 'Daily Work',
-                                            iconName: 'assignment_add',
-                                            backgroundColor: AppTheme.warningLight,
-                                            iconColor: Colors.white,
-                                            onPressed: () => _navigateToScreen(
-                                                '/daily-work-entry-screen'),
-                                          ),
-                                        ),
-                                        SizedBox(width: 3.w),
-                                        Expanded(
-                                          child: QuickActionButtonWidget(
-                                            label: 'Add Upad',
-                                            iconName: 'payment',
-                                            backgroundColor: AppTheme.successLight,
-                                            iconColor: Colors.white,
-                                            onPressed: () => _navigateToScreen(
-                                                '/upad-entry-screen'),
-                                          ),
-                                        ),
-                                        SizedBox(width: 3.w),
-                                        Expanded(
-                                          child: QuickActionButtonWidget(
-                                            label: 'Reports',
-                                            iconName: 'assessment',
-                                            backgroundColor: AppTheme.primaryLight,
-                                            iconColor: Colors.white,
-                                            onPressed: () => _navigateToScreen(
-                                                '/reports-screen'),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              _buildQuickActionsCarousel(),
 
                               SizedBox(height: 4.h),
 
-                              // Recent Activities Section
+                              SectionHeader(
+                                title: 'Recent Activities',
+                                subtitle: 'Latest work entries and payments',
+                                action: TextButton(
+                                  onPressed: () =>
+                                      _navigateToScreen('/activity-logs-screen'),
+                                  child: Text(
+                                    'View All',
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w600,
+                                      color: AppTheme.primaryLight,
+                                    ),
+                                  ),
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                              ),
+                              SizedBox(height: 2.h),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 4.w),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Recent Activities',
-                                          style: GoogleFonts.inter(
-                                            fontSize: 20.sp,
-                                            fontWeight: FontWeight.w700,
-                                            color: AppTheme.textPrimaryLight,
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () => _navigateToScreen(
-                                              '/activity-logs-screen'),
-                                          child: Text(
-                                            'View All',
-                                            style: GoogleFonts.inter(
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w500,
-                                              color: AppTheme.primaryLight,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 2.h),
-                                    if (_recentActivities.isEmpty)
-                                      Container(
+                                child: _recentActivities.isEmpty
+                                    ? Container(
                                         padding: EdgeInsets.all(6.w),
                                         decoration: BoxDecoration(
                                           color: AppTheme.lightTheme.cardColor,
@@ -448,29 +426,33 @@ class _MainDashboardState extends State<MainDashboard>
                                           ),
                                         ),
                                       )
-                                    else
-                                      ...List.generate(
-                                        _recentActivities.length,
-                                        (index) {
-                                          final activity =
-                                              _recentActivities[index];
-                                          return AnimatedContainer(
-                                            duration: Duration(
-                                                milliseconds:
-                                                    300 + (index * 100)),
-                                            curve: Curves.easeOutBack,
-                                            child: ActivityItemWidget(
-                                              title: activity['title'] ?? '',
-                                              description: activity['subtitle'] ?? '',
-                                              timestamp: activity['time'] ?? '',
-                                              iconName: activity['icon'] ?? 'info',
-                                              statusColor: activity['color'] ?? AppTheme.primaryLight,
-                                            ),
-                                          );
-                                        },
+                                    : Column(
+                                        children: List.generate(
+                                          _recentActivities.length,
+                                          (index) {
+                                            final activity =
+                                                _recentActivities[index];
+                                            return AnimatedContainer(
+                                              duration: Duration(
+                                                  milliseconds:
+                                                      300 + (index * 100)),
+                                              curve: Curves.easeOutBack,
+                                              child: ActivityItemWidget(
+                                                title: activity['title'] ?? '',
+                                                description:
+                                                    activity['subtitle'] ?? '',
+                                                timestamp:
+                                                    activity['time'] ?? '',
+                                                iconName:
+                                                    activity['icon'] ?? 'info',
+                                                statusColor:
+                                                    activity['color'] ??
+                                                        AppTheme.primaryLight,
+                                              ),
+                                            );
+                                          },
+                                        ),
                                       ),
-                                  ],
-                                ),
                               ),
 
                               SizedBox(height: 4.h),
@@ -481,6 +463,238 @@ class _MainDashboardState extends State<MainDashboard>
                     ),
                   ),
                 ),
+    );
+  }
+
+  Widget _buildSummaryChips() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 4.w),
+      child: Wrap(
+        spacing: AppSpacing.sm,
+        children: _summaryOptions.entries.map((entry) {
+          final isSelected = _selectedSummaryKey == entry.key;
+          return ChoiceChip(
+            label: Text(entry.value),
+            selected: isSelected,
+            onSelected: (_) => _selectSummary(entry.key),
+            selectedColor: AppTheme.primaryLight.withValues(alpha: 0.15),
+            backgroundColor: AppTheme.surfaceLight,
+            labelStyle: GoogleFonts.inter(
+              fontWeight: FontWeight.w600,
+              color:
+                  isSelected ? AppTheme.primaryLight : AppTheme.textSecondaryLight,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+              side: BorderSide(
+                color:
+                    isSelected ? AppTheme.primaryLight : AppTheme.dividerLight,
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildFriendlyInfoRow() {
+    final items = [
+      {
+        'icon': Icons.person_add_alt_1_rounded,
+        'label': 'Add new karigar',
+        'action': () => _navigateToScreen('/add-edit-karigar-screen'),
+      },
+      {
+        'icon': Icons.fact_check_rounded,
+        'label': 'Log today\'s work',
+        'action': () => _navigateToScreen('/daily-work-entry-screen'),
+      },
+      {
+        'icon': Icons.account_balance_wallet_rounded,
+        'label': 'Pay pending upad',
+        'action': () => _navigateToScreen('/upad-entry-screen'),
+      },
+    ];
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 4.w),
+      child: Wrap(
+        spacing: AppSpacing.sm,
+        runSpacing: AppSpacing.sm,
+        children: items
+            .map(
+              (item) => FriendlyInfoPill(
+                icon: item['icon'] as IconData,
+                label: item['label'] as String,
+                onTap: item['action'] as VoidCallback,
+                backgroundColor: AppTheme.surfaceLight,
+                iconColor: AppTheme.primaryLight,
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
+
+  Widget _buildAssistantCard() {
+    final tip = _assistantTips[_currentTipIndex];
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 4.w),
+      child: InkWell(
+        onTap: _showNextTip,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        child: Container(
+          padding: EdgeInsets.all(4.w),
+          decoration: BoxDecoration(
+            color: AppTheme.surfaceLight,
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+            border: Border.all(
+              color: AppTheme.primaryLight.withValues(alpha: 0.08),
+            ),
+            boxShadow: AppTheme.getSoftShadow(),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(3.w),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.lightbulb_circle_rounded,
+                  color: AppTheme.primaryLight,
+                  size: 22.sp,
+                ),
+              ),
+              SizedBox(width: 4.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tip['title'] ?? '',
+                      style: GoogleFonts.inter(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.textPrimaryLight,
+                      ),
+                    ),
+                    SizedBox(height: 0.8.h),
+                    Text(
+                      tip['body'] ?? '',
+                      style: GoogleFonts.inter(
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppTheme.textSecondaryLight,
+                        height: 1.4,
+                      ),
+                    ),
+                    SizedBox(height: 0.8.h),
+                    Text(
+                      'Tap for another tip',
+                      style: GoogleFonts.inter(
+                        fontSize: 9.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.primaryLight,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.refresh_rounded,
+                color: AppTheme.primaryLight,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickActionsCarousel() {
+    final quickActions = [
+      {
+        'label': 'Add Karigar',
+        'icon': 'person_add',
+        'color': AppTheme.primaryLight,
+        'helper': 'Create a profile with phone, skill, and rate.',
+        'route': '/add-edit-karigar-screen',
+      },
+      {
+        'label': 'Daily Work',
+        'icon': 'assignment_add',
+        'color': AppTheme.warningLight,
+        'helper': 'Capture pieces completed with one form.',
+        'route': '/daily-work-entry-screen',
+      },
+      {
+        'label': 'Add Upad',
+        'icon': 'payment',
+        'color': AppTheme.successLight,
+        'helper': 'Log any advance you hand over instantly.',
+        'route': '/upad-entry-screen',
+      },
+      {
+        'label': 'Reports',
+        'icon': 'assessment',
+        'color': AppTheme.primaryLight,
+        'helper': 'See month-end totals and trends.',
+        'route': '/reports-screen',
+      },
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SectionHeader(
+          title: 'Quick Actions',
+          subtitle: 'Complete frequent tasks without hunting through menus',
+          padding: EdgeInsets.symmetric(horizontal: 4.w),
+        ),
+        SizedBox(height: 2.h),
+        SizedBox(
+          height: 22.h,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            physics: BouncingScrollPhysics(),
+            padding: EdgeInsets.symmetric(horizontal: 4.w),
+            itemBuilder: (context, index) {
+              final action = quickActions[index];
+              final color = action['color'] as Color;
+              return SizedBox(
+                width: 34.w,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    QuickActionButtonWidget(
+                      label: action['label'] as String,
+                      iconName: action['icon'] as String,
+                      backgroundColor: color,
+                      iconColor: Colors.white,
+                      onPressed: () =>
+                          _navigateToScreen(action['route'] as String),
+                    ),
+                    SizedBox(height: 1.2.h),
+                    Text(
+                      action['helper'] as String,
+                      style: GoogleFonts.inter(
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppTheme.textSecondaryLight,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+            separatorBuilder: (_, __) => SizedBox(width: 3.w),
+            itemCount: quickActions.length,
+          ),
+        ),
+      ],
     );
   }
 
