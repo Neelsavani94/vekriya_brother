@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../core/app_export.dart';
-import '../../../theme/app_theme.dart';
 
+/// Clean filter bottom sheet widget
 class FilterBottomSheetWidget extends StatefulWidget {
   final Map<String, dynamic> currentFilters;
   final Function(Map<String, dynamic>) onFiltersApplied;
@@ -15,22 +15,13 @@ class FilterBottomSheetWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<FilterBottomSheetWidget> createState() =>
-      _FilterBottomSheetWidgetState();
+  State<FilterBottomSheetWidget> createState() => _FilterBottomSheetWidgetState();
 }
 
 class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
   late Map<String, dynamic> _filters;
 
   final List<String> _statusOptions = ['All', 'Active', 'Inactive'];
-  final List<String> _machineOptions = [
-    'All',
-    'Machine 1',
-    'Machine 2',
-    'Machine 3',
-    'Machine 4',
-    'Machine 5'
-  ];
   final List<String> _sortOptions = [
     'Name A-Z',
     'Name Z-A',
@@ -41,253 +32,10 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
   @override
   void initState() {
     super.initState();
-    _filters = Map<String, dynamic>.from(widget.currentFilters);
+    _filters = Map.from(widget.currentFilters);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 70.h,
-      decoration: BoxDecoration(
-        color: AppTheme.lightTheme.colorScheme.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: Column(
-        children: [
-          // Handle Bar
-          Container(
-            margin: EdgeInsets.only(top: 1.h),
-            width: 12.w,
-            height: 0.5.h,
-            decoration: BoxDecoration(
-              color: AppTheme.lightTheme.colorScheme.outline
-                  .withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-
-          // Header
-          Padding(
-            padding: EdgeInsets.all(4.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Filter Karigars',
-                  style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                TextButton(
-                  onPressed: _clearAllFilters,
-                  child: Text(
-                    'Clear All',
-                    style: AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
-                      color: AppTheme.lightTheme.colorScheme.error,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          Divider(height: 1),
-
-          // Filter Options
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(4.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Status Filter
-                  _buildFilterSection(
-                    title: 'Status',
-                    options: _statusOptions,
-                    selectedValue: _filters['status'] ?? 'All',
-                    onChanged: (value) {
-                      setState(() {
-                        _filters['status'] = value;
-                      });
-                    },
-                  ),
-
-                  SizedBox(height: 3.h),
-
-                  // Machine Filter
-                  _buildFilterSection(
-                    title: 'Machine Assignment',
-                    options: _machineOptions,
-                    selectedValue: _filters['machine'] ?? 'All',
-                    onChanged: (value) {
-                      setState(() {
-                        _filters['machine'] = value;
-                      });
-                    },
-                  ),
-
-                  SizedBox(height: 3.h),
-
-                  // Sort By
-                  _buildFilterSection(
-                    title: 'Sort By',
-                    options: _sortOptions,
-                    selectedValue: _filters['sortBy'] ?? 'Name A-Z',
-                    onChanged: (value) {
-                      setState(() {
-                        _filters['sortBy'] = value;
-                      });
-                    },
-                  ),
-
-                  SizedBox(height: 3.h),
-
-                  // Earnings Range
-                  _buildEarningsRangeFilter(),
-                ],
-              ),
-            ),
-          ),
-
-          // Apply Button
-          Container(
-            padding: EdgeInsets.all(4.w),
-            decoration: BoxDecoration(
-              color: AppTheme.lightTheme.colorScheme.surface,
-              border: Border(
-                top: BorderSide(
-                  color: AppTheme.lightTheme.colorScheme.outline
-                      .withValues(alpha: 0.2),
-                ),
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text('Cancel'),
-                  ),
-                ),
-                SizedBox(width: 4.w),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      widget.onFiltersApplied(_filters);
-                      Navigator.pop(context);
-                    },
-                    child: Text('Apply Filters'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilterSection({
-    required String title,
-    required List<String> options,
-    required String selectedValue,
-    required ValueChanged<String> onChanged,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: AppTheme.lightTheme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        SizedBox(height: 1.h),
-        Wrap(
-          spacing: 2.w,
-          runSpacing: 1.h,
-          children: options.map((option) {
-            final isSelected = selectedValue == option;
-            return FilterChip(
-              label: Text(option),
-              selected: isSelected,
-              onSelected: (selected) {
-                if (selected) {
-                  onChanged(option);
-                }
-              },
-              backgroundColor: AppTheme.lightTheme.colorScheme.surface,
-              selectedColor: AppTheme.lightTheme.colorScheme.primary
-                  .withValues(alpha: 0.2),
-              checkmarkColor: AppTheme.lightTheme.colorScheme.primary,
-              labelStyle: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-                color: isSelected
-                    ? AppTheme.lightTheme.colorScheme.primary
-                    : AppTheme.lightTheme.colorScheme.onSurface,
-                fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
-              ),
-              side: BorderSide(
-                color: isSelected
-                    ? AppTheme.lightTheme.colorScheme.primary
-                    : AppTheme.lightTheme.colorScheme.outline
-                        .withValues(alpha: 0.3),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEarningsRangeFilter() {
-    final double minEarnings = (_filters['minEarnings'] ?? 0.0).toDouble();
-    final double maxEarnings = (_filters['maxEarnings'] ?? 50000.0).toDouble();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Earnings Range',
-          style: AppTheme.lightTheme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        SizedBox(height: 2.h),
-        Row(
-          children: [
-            Text(
-              '₹${minEarnings.toInt()}',
-              style: AppTheme.lightTheme.textTheme.bodyMedium,
-            ),
-            Expanded(
-              child: RangeSlider(
-                values: RangeValues(minEarnings, maxEarnings),
-                min: 0,
-                max: 50000,
-                divisions: 50,
-                labels: RangeLabels(
-                  '₹${minEarnings.toInt()}',
-                  '₹${maxEarnings.toInt()}',
-                ),
-                onChanged: (RangeValues values) {
-                  setState(() {
-                    _filters['minEarnings'] = values.start;
-                    _filters['maxEarnings'] = values.end;
-                  });
-                },
-              ),
-            ),
-            Text(
-              '₹${maxEarnings.toInt()}',
-              style: AppTheme.lightTheme.textTheme.bodyMedium,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  void _clearAllFilters() {
+  void _resetFilters() {
     setState(() {
       _filters = {
         'status': 'All',
@@ -297,5 +45,193 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
         'maxEarnings': 50000.0,
       };
     });
+  }
+
+  void _applyFilters() {
+    widget.onFiltersApplied(_filters);
+    Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 65.h,
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceLight,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: Column(
+        children: [
+          // Handle bar
+          Container(
+            margin: EdgeInsets.only(top: 1.5.h),
+            width: 12.w,
+            height: 0.5.h,
+            decoration: BoxDecoration(
+              color: AppTheme.dividerLight,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+
+          // Header
+          Padding(
+            padding: EdgeInsets.all(5.w),
+            child: Row(
+              children: [
+                Text(
+                  'Filters',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textPrimaryLight,
+                  ),
+                ),
+                Spacer(),
+                TextButton(
+                  onPressed: _resetFilters,
+                  child: Text(
+                    'Reset',
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.primaryLight,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(Icons.close_rounded, color: AppTheme.textSecondaryLight),
+                ),
+              ],
+            ),
+          ),
+
+          Divider(height: 1),
+
+          // Filter Content
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(5.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Status Filter
+                  _buildFilterSection(
+                    title: 'Status',
+                    child: Wrap(
+                      spacing: 2.w,
+                      runSpacing: 1.h,
+                      children: _statusOptions.map((status) {
+                        final isSelected = _filters['status'] == status;
+                        return _buildChip(
+                          label: status,
+                          isSelected: isSelected,
+                          onTap: () {
+                            setState(() {
+                              _filters['status'] = status;
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ),
+
+                  SizedBox(height: 3.h),
+
+                  // Sort By Filter
+                  _buildFilterSection(
+                    title: 'Sort By',
+                    child: Wrap(
+                      spacing: 2.w,
+                      runSpacing: 1.h,
+                      children: _sortOptions.map((option) {
+                        final isSelected = _filters['sortBy'] == option;
+                        return _buildChip(
+                          label: option,
+                          isSelected: isSelected,
+                          onTap: () {
+                            setState(() {
+                              _filters['sortBy'] = option;
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Apply Button
+          Container(
+            padding: EdgeInsets.all(5.w),
+            decoration: BoxDecoration(
+              color: AppTheme.surfaceLight,
+              border: Border(top: BorderSide(color: AppTheme.dividerLight)),
+            ),
+            child: SafeArea(
+              child: SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: _applyFilters,
+                  child: Text('Apply Filters'),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterSection({
+    required String title,
+    required Widget child,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: AppTheme.textPrimaryLight,
+          ),
+        ),
+        SizedBox(height: 1.5.h),
+        child,
+      ],
+    );
+  }
+
+  Widget _buildChip({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.2.h),
+        decoration: BoxDecoration(
+          color: isSelected ? AppTheme.primaryLight : AppTheme.backgroundLight,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: isSelected ? AppTheme.primaryLight : AppTheme.dividerLight,
+          ),
+        ),
+        child: Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: isSelected ? Colors.white : AppTheme.textSecondaryLight,
+          ),
+        ),
+      ),
+    );
   }
 }

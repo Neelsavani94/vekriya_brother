@@ -3,6 +3,7 @@ import 'package:sizer/sizer.dart';
 
 import '../../../core/app_export.dart';
 
+/// Clean empty state widget for no data scenarios
 class EmptyStateWidget extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -27,77 +28,47 @@ class EmptyStateWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Illustration
             Container(
-              width: 40.w,
-              height: 40.w,
+              padding: EdgeInsets.all(6.w),
               decoration: BoxDecoration(
-                color: AppTheme.lightTheme.colorScheme.primary
-                    .withValues(alpha: 0.1),
+                color: AppTheme.primaryLight.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Center(
-                child: CustomIconWidget(
-                  iconName: isSearchResult ? 'search_off' : 'group_add',
-                  size: 60,
-                  color: AppTheme.lightTheme.colorScheme.primary
-                      .withValues(alpha: 0.6),
-                ),
+              child: Icon(
+                isSearchResult
+                    ? Icons.search_off_rounded
+                    : Icons.people_outline_rounded,
+                size: 48,
+                color: AppTheme.primaryLight,
               ),
             ),
-
-            SizedBox(height: 4.h),
-
-            // Title
+            SizedBox(height: 3.h),
             Text(
               title,
-              style: AppTheme.lightTheme.textTheme.headlineSmall?.copyWith(
+              style: GoogleFonts.poppins(
+                fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: AppTheme.lightTheme.colorScheme.onSurface,
+                color: AppTheme.textPrimaryLight,
               ),
               textAlign: TextAlign.center,
             ),
-
-            SizedBox(height: 2.h),
-
-            // Subtitle
+            SizedBox(height: 1.h),
             Text(
               subtitle,
-              style: AppTheme.lightTheme.textTheme.bodyLarge?.copyWith(
-                color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                height: 1.5,
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                color: AppTheme.textSecondaryLight,
               ),
               textAlign: TextAlign.center,
             ),
-
-            SizedBox(height: 4.h),
-
-            // Action Button
-            if (onButtonPressed != null)
-              SizedBox(
-                width: 60.w,
-                child: ElevatedButton.icon(
-                  onPressed: onButtonPressed,
-                  icon: CustomIconWidget(
-                    iconName: isSearchResult ? 'refresh' : 'add',
-                    size: 20,
-                    color: AppTheme.lightTheme.colorScheme.onPrimary,
-                  ),
-                  label: Text(
-                    buttonText,
-                    style: AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
-                      color: AppTheme.lightTheme.colorScheme.onPrimary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 2.h),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
+            if (onButtonPressed != null) ...[
+              SizedBox(height: 3.h),
+              ElevatedButton.icon(
+                onPressed: onButtonPressed,
+                icon: Icon(isSearchResult ? Icons.clear_rounded : Icons.add_rounded),
+                label: Text(buttonText),
               ),
+            ],
           ],
         ),
       ),

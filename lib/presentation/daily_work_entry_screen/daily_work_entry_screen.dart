@@ -4,12 +4,6 @@ import 'package:sizer/sizer.dart';
 import '../../core/app_export.dart';
 import '../../services/daily_work_service.dart';
 import '../../services/karigar_service.dart';
-import './widgets/date_picker_widget.dart';
-import './widgets/earnings_calculation_widget.dart';
-import './widgets/karigar_selection_widget.dart';
-import './widgets/notes_input_widget.dart';
-import './widgets/pieces_input_widget.dart';
-import './widgets/recent_entries_widget.dart';
 
 class DailyWorkEntryScreen extends StatefulWidget {
   final Map<String, dynamic>? workEntryData;
@@ -33,61 +27,31 @@ class _DailyWorkEntryScreenState extends State<DailyWorkEntryScreen> {
 
   // Controllers
   late TextEditingController _piecesController;
-  late TextEditingController _hoursController;
   late TextEditingController _rateController;
   late TextEditingController _notesController;
 
   // Form state
   String? _selectedKarigarId;
-  String? _selectedMachineId;
-  String _selectedWorkType = 'shirt';
-  String _selectedStatus = 'completed';
+  Map<String, dynamic>? _selectedKarigar;
   DateTime _selectedDate = DateTime.now();
-  int? _qualityRating;
   double _totalEarnings = 0.0;
   bool _isLoading = false;
-  bool _isDraftSaved = false;
+  bool _isDataLoading = true;
   String? _error;
 
   // Data
   List<Map<String, dynamic>> _availableKarigars = [];
-  List<Map<String, dynamic>> _availableMachines = [];
-  List<Map<String, dynamic>> _recentEntries = [];
-
-  // Validation errors
-  String? _piecesError;
-  String? _hoursError;
-  String? _rateError;
-  String? _karigarError;
-  String? _machineError;
-
-  final List<String> _workTypes = [
-    'shirt',
-    'pant',
-    'dress',
-    'jacket',
-    'custom'
-  ];
-  final List<String> _workStatuses = [
-    'pending',
-    'in_progress',
-    'completed',
-    'quality_check',
-    'delivered'
-  ];
 
   @override
   void initState() {
     super.initState();
     _initializeControllers();
     _loadInitialData();
-    _loadWorkEntryData();
   }
 
   @override
   void dispose() {
     _piecesController.dispose();
-    _hoursController.dispose();
     _rateController.dispose();
     _notesController.dispose();
     _scrollController.dispose();
@@ -96,67 +60,27 @@ class _DailyWorkEntryScreenState extends State<DailyWorkEntryScreen> {
 
   void _initializeControllers() {
     _piecesController = TextEditingController();
-    _hoursController = TextEditingController();
     _rateController = TextEditingController();
     _notesController = TextEditingController();
 
-    // Add listeners for automatic calculation
     _piecesController.addListener(_calculateEarnings);
     _rateController.addListener(_calculateEarnings);
   }
 
   Future<void> _loadInitialData() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
     try {
-      // Load available karigars and machines
-      final results = await Future.wait([
-        _karigarService.getAvailableKarigars(),
-        _dailyWorkService.getAvailableMachines(),
-        _dailyWorkService.getRecentWorkEntries(limit: 5),
-      ]);
-
+      final karigars = await _karigarService.getAvailableKarigars();
       setState(() {
-        _availableKarigars = results[0];
-        _availableMachines = results[1];
-        _recentEntries = results[2];
-        _isLoading = false;
+        _availableKarigars = karigars;
+        _isDataLoading = false;
       });
     } catch (error) {
       setState(() {
-        _error = 'Failed to load data: ${error.toString()}';
-        _isLoading = false;
+        _error = 'Failed to load karigars';
+        _isDataLoading = false;
       });
     }
   }
-
-  void _loadWorkEntryData() {
-    if (widget.workEntryData != null) {
-      final data = widget.workEntryData!;
-      _piecesController.text = data['pieces_completed']?.toString() ?? '';
-      _hoursController.text = data['hours_worked']?.toString() ?? '';
-      _rateController.text = data['rate_per_piece']?.toString() ?? '';
-      _notesController.text = data['notes'] ?? '';
-      _selectedKarigarId = data['karigar_id'];
-      _selectedMachineId = data['machine_id'];
-      _selectedWorkType = data['work_type'] ?? 'shirt';
-      _selectedStatus = data['status'] ?? 'completed';
-      _qualityRating = data['quality_rating'];
-
-      if (data['work_date'] != null) {
-        _selectedDate = DateTime.parse(data['work_date']);
-      }
-
-      _calculateEarnings();
-    }
-  }
-
-  bool get _isEditing => widget.workEntryData != null;
-
-  String get _screenTitle => _isEditing ? 'Edit Daily Work' : 'Add Daily Work';
 
   void _calculateEarnings() {
     final pieces = int.tryParse(_piecesController.text) ?? 0;
@@ -169,70 +93,8 @@ class _DailyWorkEntryScreenState extends State<DailyWorkEntryScreen> {
 
   bool get _isFormValid {
     return _selectedKarigarId != null &&
-        _selectedMachineId != null &&
         _piecesController.text.trim().isNotEmpty &&
-        _rateController.text.trim().isNotEmpty &&
-        _piecesError == null &&
-        _rateError == null &&
-        _karigarError == null &&
-        _machineError == null;
-  }
-
-  void _validatePieces(String value) {
-    setState(() {
-      if (value.trim().isEmpty) {
-        _piecesError = 'Pieces completed is required';
-      } else {
-        final pieces = int.tryParse(value.trim());
-        if (pieces == null) {
-          _piecesError = 'Enter valid number of pieces';
-        } else if (pieces <= 0) {
-          _piecesError = 'Pieces must be greater than 0';
-        } else if (pieces > 1000) {
-          _piecesError = 'Pieces seem too high';
-        } else {
-          _piecesError = null;
-        }
-      }
-    });
-  }
-
-  void _validateHours(String value) {
-    setState(() {
-      if (value.trim().isNotEmpty) {
-        final hours = double.tryParse(value.trim());
-        if (hours == null) {
-          _hoursError = 'Enter valid hours';
-        } else if (hours <= 0) {
-          _hoursError = 'Hours must be greater than 0';
-        } else if (hours > 24) {
-          _hoursError = 'Hours cannot exceed 24';
-        } else {
-          _hoursError = null;
-        }
-      } else {
-        _hoursError = null;
-      }
-    });
-  }
-
-  void _validateRate(String value) {
-    setState(() {
-      if (value.trim().isEmpty) {
-        _rateError = 'Rate per piece is required';
-      } else {
-        final rate = double.tryParse(value.trim());
-        if (rate == null) {
-          _rateError = 'Enter valid rate';
-        } else if (rate <= 0) {
-          _rateError = 'Rate must be greater than 0';
-        } else if (rate > 1000) {
-          _rateError = 'Rate seems too high';
-        } else {
-          _rateError = null;
-        }
-      }
-    });
+        _rateController.text.trim().isNotEmpty;
   }
 
   Future<void> _selectDate() async {
@@ -244,65 +106,38 @@ class _DailyWorkEntryScreenState extends State<DailyWorkEntryScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: Theme.of(context).colorScheme.copyWith(
-                  primary: AppTheme.lightTheme.primaryColor,
-                ),
+            colorScheme: ColorScheme.light(
+              primary: AppTheme.primaryLight,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: AppTheme.textPrimaryLight,
+            ),
           ),
           child: child!,
         );
       },
     );
 
-    if (picked != null && picked != _selectedDate) {
+    if (picked != null) {
       setState(() {
         _selectedDate = picked;
       });
     }
   }
 
-  void _saveDraft() {
+  void _selectKarigar(Map<String, dynamic> karigar) {
     setState(() {
-      _isDraftSaved = true;
+      _selectedKarigarId = karigar['id'];
+      _selectedKarigar = karigar;
+      if (karigar['salary_per_piece'] != null) {
+        _rateController.text = karigar['salary_per_piece'].toString();
+      }
     });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Draft saved successfully'),
-        backgroundColor: AppTheme.successLight,
-        duration: Duration(seconds: 2),
-      ),
-    );
+    Navigator.pop(context);
   }
 
   Future<void> _saveWorkEntry() async {
-    // Validate required fields
-    _validatePieces(_piecesController.text);
-    _validateRate(_rateController.text);
-    _validateHours(_hoursController.text);
-
-    if (_selectedKarigarId == null) {
-      setState(() {
-        _karigarError = 'Please select a karigar';
-      });
-    } else {
-      setState(() {
-        _karigarError = null;
-      });
-    }
-
-    if (_selectedMachineId == null) {
-      setState(() {
-        _machineError = 'Please select a machine';
-      });
-    } else {
-      setState(() {
-        _machineError = null;
-      });
-    }
-
-    if (!_isFormValid) {
-      return;
-    }
+    if (!_isFormValid) return;
 
     setState(() {
       _isLoading = true;
@@ -310,58 +145,45 @@ class _DailyWorkEntryScreenState extends State<DailyWorkEntryScreen> {
     });
 
     try {
-      // Prepare work entry data
       final workEntryData = {
         'karigar_id': _selectedKarigarId!,
-        'machine_id': _selectedMachineId!,
         'work_date': _selectedDate.toIso8601String().split('T')[0],
-        'work_type': _selectedWorkType,
+        'work_type': 'piece_work',
         'pieces_completed': int.parse(_piecesController.text.trim()),
-        'hours_worked': _hoursController.text.trim().isNotEmpty
-            ? double.parse(_hoursController.text.trim())
-            : null,
         'rate_per_piece': double.parse(_rateController.text.trim()),
-        'status': _selectedStatus,
-        'quality_rating': _qualityRating,
+        'status': 'completed',
         'notes': _notesController.text.trim().isNotEmpty
             ? _notesController.text.trim()
             : null,
       };
 
-      Map<String, dynamic> result;
+      await _dailyWorkService.createDailyWorkEntry(workEntryData);
 
-      if (_isEditing) {
-        result = await _dailyWorkService.updateDailyWorkEntry(
-          widget.workEntryData!['id'],
-          workEntryData,
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
+                SizedBox(width: 2.w),
+                Text('Work entry saved successfully!'),
+              ],
+            ),
+            backgroundColor: AppTheme.successLight,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         );
-      } else {
-        result = await _dailyWorkService.createDailyWorkEntry(workEntryData);
+        Navigator.pop(context, true);
       }
-
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_isEditing
-              ? 'Work entry updated successfully'
-              : 'Work entry added successfully'),
-          backgroundColor: AppTheme.successLight,
-          duration: Duration(seconds: 2),
-        ),
-      );
-
-      // Navigate back with result
-      Navigator.pop(context, result);
     } catch (error) {
       setState(() {
         _error = error.toString();
       });
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to save work entry: ${error.toString()}'),
+          content: Text('Failed to save: ${error.toString()}'),
           backgroundColor: AppTheme.errorLight,
-          duration: Duration(seconds: 3),
         ),
       );
     } finally {
@@ -374,177 +196,532 @@ class _DailyWorkEntryScreenState extends State<DailyWorkEntryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.backgroundLight,
       appBar: AppBar(
-        title: Text(_screenTitle),
+        title: Text('Add Daily Work'),
+        backgroundColor: AppTheme.surfaceLight,
+        elevation: 0,
         leading: IconButton(
+          icon: Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.pop(context),
-          icon: CustomIconWidget(
-            iconName: 'arrow_back',
-            color: AppTheme.lightTheme.appBarTheme.foregroundColor!,
-            size: 24,
-          ),
         ),
-        actions: [
-          if (!_isDraftSaved)
-            TextButton(
-              onPressed: _saveDraft,
-              child: Text(
-                'Save Draft',
-                style: TextStyle(
-                  color: AppTheme.lightTheme.appBarTheme.foregroundColor,
-                ),
-              ),
-            ),
-        ],
       ),
-      body: _isLoading && _availableKarigars.isEmpty
+      body: _isDataLoading
           ? Center(
-              child: CircularProgressIndicator(
-                color: AppTheme.lightTheme.colorScheme.primary,
-              ),
+              child: CircularProgressIndicator(color: AppTheme.primaryLight),
             )
           : Form(
               key: _formKey,
-              child: Column(
-                children: [
-                  if (_error != null)
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(4.w),
-                      color: AppTheme.errorLight,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                padding: EdgeInsets.all(5.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Date Selection
+                    _buildSectionCard(
+                      title: 'Work Date',
+                      icon: Icons.calendar_today_rounded,
+                      child: _buildDateSelector(),
+                    ),
+
+                    SizedBox(height: 2.h),
+
+                    // Karigar Selection
+                    _buildSectionCard(
+                      title: 'Select Karigar',
+                      icon: Icons.person_rounded,
+                      child: _buildKarigarSelector(),
+                    ),
+
+                    SizedBox(height: 2.h),
+
+                    // Work Details
+                    _buildSectionCard(
+                      title: 'Work Details',
+                      icon: Icons.work_rounded,
+                      child: _buildWorkDetails(),
+                    ),
+
+                    SizedBox(height: 2.h),
+
+                    // Earnings Summary
+                    _buildEarningsSummary(),
+
+                    SizedBox(height: 2.h),
+
+                    // Notes
+                    _buildSectionCard(
+                      title: 'Notes (Optional)',
+                      icon: Icons.notes_rounded,
+                      child: _buildNotesInput(),
+                    ),
+
+                    SizedBox(height: 12.h),
+                  ],
+                ),
+              ),
+            ),
+      bottomNavigationBar: _buildBottomBar(),
+    );
+  }
+
+  Widget _buildSectionCard({
+    required String title,
+    required IconData icon,
+    required Widget child,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(4.w),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceLight,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.dividerLight),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(2.w),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, color: AppTheme.primaryLight, size: 18),
+              ),
+              SizedBox(width: 3.w),
+              Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.textPrimaryLight,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 2.h),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateSelector() {
+    return GestureDetector(
+      onTap: _selectDate,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+        decoration: BoxDecoration(
+          color: AppTheme.backgroundLight,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppTheme.dividerLight),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.event_rounded,
+              color: AppTheme.primaryLight,
+              size: 22,
+            ),
+            SizedBox(width: 3.w),
+            Text(
+              '${_selectedDate.day} ${_getMonthName(_selectedDate.month)} ${_selectedDate.year}',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppTheme.textPrimaryLight,
+              ),
+            ),
+            Spacer(),
+            Text(
+              _isToday(_selectedDate) ? 'Today' : 'Tap to change',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: AppTheme.textSecondaryLight,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getMonthName(int month) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return months[month - 1];
+  }
+
+  bool _isToday(DateTime date) {
+    final now = DateTime.now();
+    return date.year == now.year && date.month == now.month && date.day == now.day;
+  }
+
+  Widget _buildKarigarSelector() {
+    return GestureDetector(
+      onTap: _showKarigarPicker,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+        decoration: BoxDecoration(
+          color: AppTheme.backgroundLight,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: _selectedKarigar != null ? AppTheme.primaryLight : AppTheme.dividerLight,
+            width: _selectedKarigar != null ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 12.w,
+              height: 12.w,
+              decoration: BoxDecoration(
+                color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: _selectedKarigar != null
+                  ? Center(
                       child: Text(
-                        _error!,
-                        style: TextStyle(color: Colors.white),
-                        textAlign: TextAlign.center,
+                        _getInitials(_selectedKarigar!['full_name'] ?? ''),
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: AppTheme.primaryLight,
+                        ),
+                      ),
+                    )
+                  : Icon(
+                      Icons.person_add_rounded,
+                      color: AppTheme.primaryLight,
+                    ),
+            ),
+            SizedBox(width: 3.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _selectedKarigar?['full_name'] ?? 'Select a Karigar',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: _selectedKarigar != null
+                          ? AppTheme.textPrimaryLight
+                          : AppTheme.textSecondaryLight,
+                    ),
+                  ),
+                  if (_selectedKarigar != null)
+                    Text(
+                      '₹${_selectedKarigar!['salary_per_piece'] ?? 0}/piece',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: AppTheme.textSecondaryLight,
                       ),
                     ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      controller: _scrollController,
-                      padding: EdgeInsets.only(bottom: 12.h),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 1.h),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: AppTheme.textLabelLight,
+              size: 16,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-                          // Date Picker
-                          DatePickerWidget(
-                            selectedDate: _selectedDate,
-                            onDateChanged: (date) {
-                              setState(() {
-                                _selectedDate = date;
-                              });
-                            },
-                          ),
+  String _getInitials(String name) {
+    final parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return name.isNotEmpty ? name[0].toUpperCase() : '?';
+  }
 
-                          // Karigar Selection
-                          KarigarSelectionWidget(
-                            selectedKarigar: _selectedKarigarId != null
-                                ? _availableKarigars.firstWhere(
-                                    (k) => k['id'] == _selectedKarigarId,
-                                    orElse: () => {},
-                                  )
-                                : null,
-                            onKarigarSelected: (karigar) {
-                              setState(() {
-                                _selectedKarigarId = karigar['id'];
-                                _karigarError = null;
-
-                                // Auto-fill rate from karigar data
-                                if (karigar['salary_per_piece'] != null) {
-                                  _rateController.text =
-                                      karigar['salary_per_piece'].toString();
-                                  _calculateEarnings();
-                                }
-                              });
-                            },
-                            karigarList: _availableKarigars,
-                          ),
-
-                          // Pieces Input
-                          PiecesInputWidget(
-                            controller: _piecesController,
-                            onChanged: _validatePieces,
-                          ),
-
-                          // Earnings Calculation
-                          EarningsCalculationWidget(
-                            pieces: int.tryParse(_piecesController.text) ?? 0,
-                            pieceRate: double.tryParse(_rateController.text) ?? 0.0,
-                            karigarName: _selectedKarigarId != null
-                                ? (_availableKarigars.firstWhere(
-                                    (k) => k['id'] == _selectedKarigarId,
-                                    orElse: () => {'name': 'Unknown'},
-                                  )['name'] as String)
-                                : 'Not Selected',
-                          ),
-
-                          // Notes Input
-                          NotesInputWidget(
-                            controller: _notesController,
-                            onChanged: (value) {
-                              // Notes validation if needed
-                            },
-                          ),
-
-                          // Recent Entries
-                          if (_recentEntries.isNotEmpty)
-                            RecentEntriesWidget(
-                              recentEntries: _recentEntries,
-                              onEditEntry: (entry) {
-                                // Handle entry tap - could prefill form
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                        'Entry details: ${entry['work_type']} - ${entry['pieces_completed']} pieces'),
-                                  ),
-                                );
-                              },
-                            ),
-                        ],
-                      ),
+  void _showKarigarPicker() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: 70.h,
+        decoration: BoxDecoration(
+          color: AppTheme.surfaceLight,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: 1.5.h),
+              width: 12.w,
+              height: 0.5.h,
+              decoration: BoxDecoration(
+                color: AppTheme.dividerLight,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(5.w),
+              child: Row(
+                children: [
+                  Text(
+                    'Select Karigar',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.textPrimaryLight,
                     ),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(Icons.close_rounded),
                   ),
                 ],
               ),
             ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(4.w),
-        decoration: BoxDecoration(
-          color: AppTheme.lightTheme.scaffoldBackgroundColor,
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme.shadowLight,
-              blurRadius: 8,
-              offset: Offset(0, -2),
+            Divider(height: 1),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(vertical: 1.h),
+                itemCount: _availableKarigars.length,
+                itemBuilder: (context, index) {
+                  final karigar = _availableKarigars[index];
+                  final isSelected = karigar['id'] == _selectedKarigarId;
+
+                  return ListTile(
+                    onTap: () => _selectKarigar(karigar),
+                    leading: Container(
+                      width: 12.w,
+                      height: 12.w,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AppTheme.primaryLight
+                            : AppTheme.primaryLight.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Text(
+                          _getInitials(karigar['full_name'] ?? ''),
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: isSelected ? Colors.white : AppTheme.primaryLight,
+                          ),
+                        ),
+                      ),
+                    ),
+                    title: Text(
+                      karigar['full_name'] ?? '',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.textPrimaryLight,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '₹${karigar['salary_per_piece'] ?? 0}/piece',
+                      style: GoogleFonts.poppins(
+                        color: AppTheme.textSecondaryLight,
+                        fontSize: 12,
+                      ),
+                    ),
+                    trailing: isSelected
+                        ? Icon(Icons.check_circle_rounded, color: AppTheme.primaryLight)
+                        : null,
+                  );
+                },
+              ),
             ),
           ],
         ),
-        child: SafeArea(
-          child: SizedBox(
-            width: double.infinity,
-            height: 6.h,
-            child: ElevatedButton(
-              onPressed: _isFormValid && !_isLoading ? _saveWorkEntry : null,
-              child: _isLoading
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          AppTheme.lightTheme.colorScheme.onPrimary,
+      ),
+    );
+  }
+
+  Widget _buildWorkDetails() {
+    return Column(
+      children: [
+        // Pieces Input
+        _buildInputField(
+          controller: _piecesController,
+          label: 'Number of Pieces',
+          hint: 'Enter pieces completed',
+          keyboardType: TextInputType.number,
+          prefix: Icon(Icons.inventory_2_rounded, color: AppTheme.textSecondaryLight, size: 20),
+        ),
+        SizedBox(height: 2.h),
+        // Rate Input
+        _buildInputField(
+          controller: _rateController,
+          label: 'Rate per Piece (₹)',
+          hint: 'Enter rate per piece',
+          keyboardType: TextInputType.number,
+          prefix: Icon(Icons.currency_rupee_rounded, color: AppTheme.textSecondaryLight, size: 20),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    TextInputType keyboardType = TextInputType.text,
+    Widget? prefix,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: AppTheme.textSecondaryLight,
+          ),
+        ),
+        SizedBox(height: 1.h),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: AppTheme.textPrimaryLight,
+          ),
+          decoration: InputDecoration(
+            hintText: hint,
+            prefixIcon: prefix,
+            contentPadding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEarningsSummary() {
+    return Container(
+      padding: EdgeInsets.all(4.w),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.successLight,
+            AppTheme.successLight.withValues(alpha: 0.85),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.successLight.withValues(alpha: 0.3),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(3.w),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              Icons.account_balance_wallet_rounded,
+              color: Colors.white,
+              size: 28,
+            ),
+          ),
+          SizedBox(width: 4.w),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Total Earnings',
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white.withValues(alpha: 0.9),
+                ),
+              ),
+              Text(
+                '₹${_totalEarnings.toStringAsFixed(0)}',
+                style: GoogleFonts.poppins(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotesInput() {
+    return TextFormField(
+      controller: _notesController,
+      maxLines: 3,
+      style: GoogleFonts.poppins(
+        fontSize: 15,
+        color: AppTheme.textPrimaryLight,
+      ),
+      decoration: InputDecoration(
+        hintText: 'Add any notes about this work...',
+        contentPadding: EdgeInsets.all(4.w),
+      ),
+    );
+  }
+
+  Widget _buildBottomBar() {
+    return Container(
+      padding: EdgeInsets.all(5.w),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceLight,
+        border: Border(top: BorderSide(color: AppTheme.dividerLight)),
+      ),
+      child: SafeArea(
+        child: SizedBox(
+          width: double.infinity,
+          height: 56,
+          child: ElevatedButton(
+            onPressed: _isFormValid && !_isLoading ? _saveWorkEntry : null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryLight,
+              disabledBackgroundColor: AppTheme.dividerLight,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+            child: _isLoading
+                ? SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.5,
+                    ),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.check_rounded, color: Colors.white),
+                      SizedBox(width: 2.w),
+                      Text(
+                        'Save Work Entry',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
-                    )
-                  : Text(
-                      _isEditing ? 'Update Work Entry' : 'Save Work Entry',
-                      style:
-                          AppTheme.lightTheme.textTheme.titleMedium?.copyWith(
-                        color: AppTheme.lightTheme.colorScheme.onPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-            ),
+                    ],
+                  ),
           ),
         ),
       ),

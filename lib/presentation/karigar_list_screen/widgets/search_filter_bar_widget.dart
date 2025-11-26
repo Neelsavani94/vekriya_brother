@@ -3,9 +3,10 @@ import 'package:sizer/sizer.dart';
 
 import '../../../core/app_export.dart';
 
+/// Clean search and filter bar widget
 class SearchFilterBarWidget extends StatelessWidget {
   final TextEditingController searchController;
-  final ValueChanged<String> onSearchChanged;
+  final Function(String) onSearchChanged;
   final VoidCallback onFilterTap;
   final int activeFiltersCount;
 
@@ -19,134 +20,94 @@ class SearchFilterBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-      decoration: BoxDecoration(
-        color: AppTheme.lightTheme.colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: AppTheme.lightTheme.colorScheme.shadow,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
       child: Row(
         children: [
           // Search Field
           Expanded(
             child: Container(
-              height: 6.h,
               decoration: BoxDecoration(
-                color: AppTheme.lightTheme.colorScheme.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppTheme.lightTheme.colorScheme.outline
-                      .withValues(alpha: 0.3),
-                ),
+                color: AppTheme.surfaceLight,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppTheme.dividerLight),
               ),
               child: TextField(
                 controller: searchController,
                 onChanged: onSearchChanged,
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  color: AppTheme.textPrimaryLight,
+                ),
                 decoration: InputDecoration(
                   hintText: 'Search karigars...',
-                  hintStyle: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+                  hintStyle: GoogleFonts.poppins(
+                    color: AppTheme.textLabelLight,
+                    fontSize: 15,
                   ),
-                  prefixIcon: Padding(
-                    padding: EdgeInsets.all(3.w),
-                    child: CustomIconWidget(
-                      iconName: 'search',
-                      size: 20,
-                      color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                    ),
+                  prefixIcon: Icon(
+                    Icons.search_rounded,
+                    color: AppTheme.textSecondaryLight,
+                    size: 22,
                   ),
-                  suffixIcon: searchController.text.isNotEmpty
-                      ? IconButton(
-                          onPressed: () {
-                            searchController.clear();
-                            onSearchChanged('');
-                          },
-                          icon: CustomIconWidget(
-                            iconName: 'clear',
-                            size: 20,
-                            color: AppTheme
-                                .lightTheme.colorScheme.onSurfaceVariant,
-                          ),
-                        )
-                      : null,
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 4.w,
-                    vertical: 1.5.h,
+                    vertical: 1.8.h,
                   ),
                 ),
-                style: AppTheme.lightTheme.textTheme.bodyMedium,
               ),
             ),
           ),
           SizedBox(width: 3.w),
-
+          
           // Filter Button
-          Container(
-            height: 6.h,
-            width: 12.w,
-            decoration: BoxDecoration(
-              color: activeFiltersCount > 0
-                  ? AppTheme.lightTheme.colorScheme.primary
-                  : AppTheme.lightTheme.colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
+          GestureDetector(
+            onTap: onFilterTap,
+            child: Container(
+              padding: EdgeInsets.all(3.w),
+              decoration: BoxDecoration(
                 color: activeFiltersCount > 0
-                    ? AppTheme.lightTheme.colorScheme.primary
-                    : AppTheme.lightTheme.colorScheme.outline
-                        .withValues(alpha: 0.3),
-              ),
-            ),
-            child: Stack(
-              children: [
-                InkWell(
-                  onTap: onFilterTap,
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: Center(
-                      child: CustomIconWidget(
-                        iconName: 'filter_list',
-                        size: 22,
-                        color: activeFiltersCount > 0
-                            ? AppTheme.lightTheme.colorScheme.onPrimary
-                            : AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
+                    ? AppTheme.primaryLight
+                    : AppTheme.surfaceLight,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: activeFiltersCount > 0
+                      ? AppTheme.primaryLight
+                      : AppTheme.dividerLight,
                 ),
-                if (activeFiltersCount > 0)
-                  Positioned(
-                    top: 0.5.h,
-                    right: 1.w,
-                    child: Container(
-                      width: 4.w,
-                      height: 4.w,
-                      decoration: BoxDecoration(
-                        color: AppTheme.lightTheme.colorScheme.error,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
+              ),
+              child: Stack(
+                children: [
+                  Icon(
+                    Icons.tune_rounded,
+                    color: activeFiltersCount > 0
+                        ? Colors.white
+                        : AppTheme.textSecondaryLight,
+                    size: 22,
+                  ),
+                  if (activeFiltersCount > 0)
+                    Positioned(
+                      right: -2,
+                      top: -2,
+                      child: Container(
+                        padding: EdgeInsets.all(1.w),
+                        decoration: BoxDecoration(
+                          color: AppTheme.warningLight,
+                          shape: BoxShape.circle,
+                        ),
                         child: Text(
-                          activeFiltersCount.toString(),
-                          style: AppTheme.lightTheme.textTheme.labelSmall
-                              ?.copyWith(
-                            color: AppTheme.lightTheme.colorScheme.onError,
-                            fontSize: 8.sp,
-                            fontWeight: FontWeight.w600,
+                          '$activeFiltersCount',
+                          style: GoogleFonts.poppins(
+                            fontSize: 8,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
                           ),
                         ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

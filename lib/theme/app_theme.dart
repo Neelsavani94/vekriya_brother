@@ -2,97 +2,70 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// A class that contains all theme configurations for Vekariya Brothers - Premium Karigar & Finance Manager
+/// Designed for non-tech users with clear visual hierarchy and easy-to-read typography
 class AppTheme {
   AppTheme._();
 
-  // 🎨 PREMIUM COLOR PALETTE - Vekariya Brothers Brand
-  static const Color primaryLight =
-      Color(0xFF1E88E5); // Royal Blue – trust + clarity
-  static const Color primaryVariantLight = Color(0xFF1565C0); // Deep Royal Blue
-  static const Color secondaryLight =
-      Color(0xFFFFC107); // Warm Yellow – stitching/karigar theme
-  static const Color secondaryVariantLight = Color(0xFFF57F17); // Deep Yellow
-  static const Color accentGreenLight =
-      Color(0xFF43A047); // Green – success, paid, growth
-  static const Color accentRedLight =
-      Color(0xFFE53935); // Red – alerts, pending
-  static const Color backgroundLight =
-      Color(0xFFF7F9FC); // Ultra light ice grey
+  // 🎨 USER-FRIENDLY COLOR PALETTE - Warm & Professional
+  static const Color primaryLight = Color(0xFF2563EB); // Vivid Blue - trust
+  static const Color primaryVariantLight = Color(0xFF1D4ED8); // Deep Blue
+  static const Color secondaryLight = Color(0xFF10B981); // Emerald Green - success/money
+  static const Color secondaryVariantLight = Color(0xFF059669); // Deep Emerald
+  static const Color accentOrange = Color(0xFFEA580C); // Warm Orange - action
+  static const Color accentGreenLight = Color(0xFF22C55E); // Success Green
+  static const Color accentRedLight = Color(0xFFDC2626); // Clear Red - alerts
+  static const Color backgroundLight = Color(0xFFF8FAFC); // Soft grey-blue
   static const Color surfaceLight = Color(0xFFFFFFFF); // Pure white cards
-  static const Color errorLight = Color(0xFFE53935); // Red alerts
-  static const Color warningLight = Color(0xFFFFC107); // Yellow warnings
-  static const Color successLight = Color(0xFF43A047); // Success green
-  static const Color infoLight = Color(0xFF1E88E5); // Info blue
+  static const Color errorLight = Color(0xFFDC2626); // Red alerts
+  static const Color warningLight = Color(0xFFF59E0B); // Amber warnings
+  static const Color successLight = Color(0xFF22C55E); // Success green
+  static const Color infoLight = Color(0xFF3B82F6); // Info blue
 
-  // 🌈 Premium gradient colors for modern fintech feel
+  // Premium gradient colors
   static const List<Color> primaryGradient = [
-    Color(0xFF1E88E5), // Royal Blue
-    Color(0xFF1565C0), // Deep Blue
-    Color(0xFF0D47A1), // Navy Blue
+    Color(0xFF3B82F6), // Blue
+    Color(0xFF2563EB), // Deep Blue
   ];
 
   static const List<Color> successGradient = [
-    Color(0xFF43A047), // Success Green
-    Color(0xFF388E3C), // Deep Green
-    Color(0xFF2E7D32), // Forest Green
+    Color(0xFF22C55E),
+    Color(0xFF16A34A),
   ];
 
   static const List<Color> warningGradient = [
-    Color(0xFFFFC107), // Warm Yellow
-    Color(0xFFF57C00), // Orange Yellow
-    Color(0xFFE65100), // Deep Orange
+    Color(0xFFF59E0B),
+    Color(0xFFD97706),
   ];
 
-  static const List<Color> accentGradient = [
-    Color(0xFF1E88E5), // Royal Blue
-    Color(0xFF43A047), // Success Green
-  ];
-
-  // 📝 Premium Text Colors - Crystal Clear Typography
+  // 📝 Text Colors - High Contrast for Readability
   static const Color onPrimaryLight = Color(0xFFFFFFFF);
-  static const Color onSecondaryLight = Color(0xFF1A1A1A);
-  static const Color onBackgroundLight = Color(0xFF1A1A1A);
-  static const Color onSurfaceLight = Color(0xFF1A1A1A);
-  static const Color onErrorLight = Color(0xFFFFFFFF);
+  static const Color onSecondaryLight = Color(0xFFFFFFFF);
+  static const Color onBackgroundLight = Color(0xFF0F172A); // Slate 900
+  static const Color onSurfaceLight = Color(0xFF1E293B); // Slate 800
 
-  static const Color textPrimaryLight = Color(0xFF1A1A1A); // Primary text
-  static const Color textSecondaryLight = Color(0xFF505050); // Secondary text
-  static const Color textLabelLight = Color(0xFF8A8A8A); // Labels
-  static const Color textDisabledLight = Color(0xFFBDBDBD);
+  static const Color textPrimaryLight = Color(0xFF0F172A); // Very dark - easy to read
+  static const Color textSecondaryLight = Color(0xFF475569); // Medium grey
+  static const Color textLabelLight = Color(0xFF64748B); // Label grey
+  static const Color textDisabledLight = Color(0xFF94A3B8);
 
-  // Dark theme colors (keeping existing structure for consistency)
-  static const Color primaryDark = Color(0xFF42A5F5);
-  static const Color primaryVariantDark = Color(0xFF1976D2);
-  static const Color secondaryDark = Color(0xFFFFD54F);
-  static const Color secondaryVariantDark = Color(0xFFF57F17);
-  static const Color backgroundDark = Color(0xFF121212);
-  static const Color surfaceDark = Color(0xFF1E1E1E);
-  static const Color errorDark = Color(0xFFEF5350);
-  static const Color warningDark = Color(0xFFFFB74D);
-  static const Color successDark = Color(0xFF66BB6A);
+  // Dark theme colors
+  static const Color primaryDark = Color(0xFF60A5FA);
+  static const Color primaryVariantDark = Color(0xFF3B82F6);
+  static const Color secondaryDark = Color(0xFF34D399);
+  static const Color backgroundDark = Color(0xFF0F172A);
+  static const Color surfaceDark = Color(0xFF1E293B);
+  static const Color errorDark = Color(0xFFF87171);
+  static const Color textPrimaryDark = Color(0xFFF8FAFC);
+  static const Color textSecondaryDark = Color(0xFFCBD5E1);
 
-  // 🎯 Enhanced UI element colors for premium feel
-  static const Color cardLight = Color(0xFFFFFFFF); // Pure white cards
-  static const Color cardDark = Color(0xFF2D2D2D);
-  static const Color dialogLight = Color(0xFFFFFFFF);
-  static const Color dialogDark = Color(0xFF2D2D2D);
+  // UI element colors
+  static const Color cardLight = Color(0xFFFFFFFF);
+  static const Color cardDark = Color(0xFF1E293B);
+  static const Color shadowLight = Color(0x1A000000); // 10% black shadow
+  static const Color dividerLight = Color(0xFFE2E8F0);
+  static const Color dividerDark = Color(0xFF334155);
 
-  // 💎 Soft shadows for premium look (5% opacity)
-  static const Color shadowLight = Color(0x0D000000); // 5% black shadow
-  static const Color shadowDark = Color(0x0DFFFFFF);
-  static const Color dividerLight = Color(0xFFE0E0E0);
-  static const Color dividerDark = Color(0xFF424242);
-
-  static const Color textPrimaryDark = Color(0xFFFFFFFF);
-  static const Color textSecondaryDark = Color(0xFFB0B0B0);
-  static const Color textDisabledDark = Color(0xFF616161);
-  static const Color onPrimaryDark = Color(0xFF000000);
-  static const Color onSecondaryDark = Color(0xFF000000);
-  static const Color onBackgroundDark = Color(0xFFFFFFFF);
-  static const Color onSurfaceDark = Color(0xFFFFFFFF);
-  static const Color onErrorDark = Color(0xFF000000);
-
-  /// 🚀 Premium Light Theme - Modern Fintech + Admin App Feel
+  /// 🚀 Premium Light Theme - User-Friendly Design
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     useMaterial3: true,
@@ -100,216 +73,216 @@ class AppTheme {
       brightness: Brightness.light,
       primary: primaryLight,
       onPrimary: onPrimaryLight,
-      primaryContainer: Color(0xFFE3F2FD), // Light blue container
-      onPrimaryContainer: Color(0xFF0D47A1),
+      primaryContainer: Color(0xFFDBEAFE),
+      onPrimaryContainer: Color(0xFF1E3A8A),
       secondary: secondaryLight,
       onSecondary: onSecondaryLight,
-      secondaryContainer: Color(0xFFFFF8E1), // Light yellow container
-      onSecondaryContainer: Color(0xFFE65100),
-      tertiary: accentGreenLight,
+      secondaryContainer: Color(0xFFD1FAE5),
+      onSecondaryContainer: Color(0xFF065F46),
+      tertiary: warningLight,
       onTertiary: Color(0xFFFFFFFF),
-      tertiaryContainer: Color(0xFFE8F5E8), // Light green container
-      onTertiaryContainer: Color(0xFF1B5E20),
+      tertiaryContainer: Color(0xFFFEF3C7),
+      onTertiaryContainer: Color(0xFF92400E),
       error: errorLight,
-      onError: onErrorLight,
+      onError: onPrimaryLight,
       surface: surfaceLight,
       onSurface: onSurfaceLight,
       onSurfaceVariant: textSecondaryLight,
       outline: dividerLight,
-      outlineVariant: Color(0xFFE0E0E0),
+      outlineVariant: Color(0xFFE2E8F0),
       shadow: shadowLight,
-      scrim: Color(0x0D000000),
+      scrim: Color(0x1A000000),
       inverseSurface: surfaceDark,
-      onInverseSurface: onSurfaceDark,
+      onInverseSurface: textPrimaryDark,
       inversePrimary: primaryDark,
-      surfaceTint: primaryLight,
     ),
-    scaffoldBackgroundColor: backgroundLight, // Ultra light ice grey
+    scaffoldBackgroundColor: backgroundLight,
     cardColor: cardLight,
     dividerColor: dividerLight,
 
-    // 📱 Premium AppBar - Transparent with clean typography
+    // 📱 Clean AppBar
     appBarTheme: AppBarTheme(
-      backgroundColor: Colors.transparent,
+      backgroundColor: surfaceLight,
       foregroundColor: textPrimaryLight,
       elevation: 0,
-      scrolledUnderElevation: 0,
+      scrolledUnderElevation: 1,
       centerTitle: true,
-      titleTextStyle: GoogleFonts.inter(
+      titleTextStyle: GoogleFonts.poppins(
         fontSize: 18,
         fontWeight: FontWeight.w600,
         color: textPrimaryLight,
-        letterSpacing: -0.5,
+        letterSpacing: -0.3,
       ),
       iconTheme: IconThemeData(color: textPrimaryLight, size: 24),
     ),
 
-    // 🎴 Premium Card Theme - Rounded (20px) + Soft Shadow
+    // 🎴 Clean Card Theme - Larger radius for friendly look
     cardTheme: CardTheme(
       color: cardLight,
       elevation: 0,
       shadowColor: Colors.transparent,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0), // Premium rounded cards
+        borderRadius: BorderRadius.circular(16.0),
+        side: BorderSide(color: dividerLight, width: 1),
       ),
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     ),
 
-    // 🎯 Premium FAB Theme
+    // 🎯 Prominent FAB
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: accentGreenLight,
+      backgroundColor: primaryLight,
       foregroundColor: onPrimaryLight,
-      elevation: 0,
-      focusElevation: 0,
-      hoverElevation: 0,
-      highlightElevation: 0,
+      elevation: 4,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
+        borderRadius: BorderRadius.circular(16.0),
       ),
     ),
 
-    // 🔘 Premium Button Themes - Modern Interactions
+    // 🔘 Large, Easy-to-Tap Buttons
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         foregroundColor: onPrimaryLight,
         backgroundColor: primaryLight,
-        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-        elevation: 0,
-        shadowColor: Colors.transparent,
+        padding: EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+        elevation: 2,
+        shadowColor: primaryLight.withValues(alpha: 0.4),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(14.0),
         ),
-        textStyle: GoogleFonts.inter(
+        textStyle: GoogleFonts.poppins(
           fontSize: 16,
           fontWeight: FontWeight.w600,
           letterSpacing: -0.2,
         ),
+        minimumSize: Size(double.infinity, 54), // Large touch target
       ),
     ),
 
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: primaryLight,
-        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-        side: BorderSide(color: primaryLight, width: 1.5),
+        padding: EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+        side: BorderSide(color: primaryLight, width: 2),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(14.0),
         ),
-        textStyle: GoogleFonts.inter(
+        textStyle: GoogleFonts.poppins(
           fontSize: 16,
           fontWeight: FontWeight.w600,
           letterSpacing: -0.2,
         ),
+        minimumSize: Size(double.infinity, 54),
       ),
     ),
 
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: primaryLight,
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
-        textStyle: GoogleFonts.inter(
-          fontSize: 16,
+        textStyle: GoogleFonts.poppins(
+          fontSize: 15,
           fontWeight: FontWeight.w600,
           letterSpacing: -0.2,
         ),
       ),
     ),
 
-    // 📝 Premium Typography - Inter Font for Modern Feel
-    textTheme: _buildPremiumTextTheme(isLight: true),
+    // 📝 Clean, Readable Typography
+    textTheme: _buildCleanTextTheme(isLight: true),
 
-    // 📝 Premium Input Decoration - Clean + Focused
+    // 📝 User-Friendly Input Fields
     inputDecorationTheme: InputDecorationTheme(
       fillColor: surfaceLight,
       filled: true,
       contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
-        borderSide: BorderSide(color: dividerLight, width: 1.0),
+        borderRadius: BorderRadius.circular(14.0),
+        borderSide: BorderSide(color: dividerLight, width: 1.5),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
-        borderSide: BorderSide(color: dividerLight, width: 1.0),
+        borderRadius: BorderRadius.circular(14.0),
+        borderSide: BorderSide(color: dividerLight, width: 1.5),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(14.0),
         borderSide: BorderSide(color: primaryLight, width: 2.0),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
-        borderSide: BorderSide(color: errorLight, width: 1.0),
+        borderRadius: BorderRadius.circular(14.0),
+        borderSide: BorderSide(color: errorLight, width: 1.5),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(14.0),
         borderSide: BorderSide(color: errorLight, width: 2.0),
       ),
-      labelStyle: GoogleFonts.inter(
-        color: textLabelLight,
-        fontSize: 16,
+      labelStyle: GoogleFonts.poppins(
+        color: textSecondaryLight,
+        fontSize: 15,
         fontWeight: FontWeight.w500,
-        letterSpacing: -0.2,
       ),
-      hintStyle: GoogleFonts.inter(
+      hintStyle: GoogleFonts.poppins(
         color: textLabelLight,
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: FontWeight.w400,
-        letterSpacing: -0.2,
       ),
+      errorStyle: GoogleFonts.poppins(
+        color: errorLight,
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+      ),
+      prefixIconColor: textSecondaryLight,
+      suffixIconColor: textSecondaryLight,
     ),
 
-    // 📑 Premium Tab Bar Theme
+    // Tab bar
     tabBarTheme: TabBarTheme(
       labelColor: primaryLight,
       unselectedLabelColor: textSecondaryLight,
       indicatorColor: primaryLight,
-      indicatorSize: TabBarIndicatorSize.label,
-      labelStyle: GoogleFonts.inter(
+      indicatorSize: TabBarIndicatorSize.tab,
+      labelStyle: GoogleFonts.poppins(
         fontSize: 14,
         fontWeight: FontWeight.w600,
-        letterSpacing: -0.1,
       ),
-      unselectedLabelStyle: GoogleFonts.inter(
+      unselectedLabelStyle: GoogleFonts.poppins(
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        letterSpacing: -0.1,
       ),
     ),
 
-    // 🧭 Bottom Navigation - Quick Access Design
+    // 🧭 Bottom Navigation - Easy Access Design
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: surfaceLight,
       selectedItemColor: primaryLight,
       unselectedItemColor: textSecondaryLight,
       type: BottomNavigationBarType.fixed,
-      elevation: 8.0,
-      selectedLabelStyle: GoogleFonts.inter(
+      elevation: 8,
+      selectedLabelStyle: GoogleFonts.poppins(
         fontSize: 12,
         fontWeight: FontWeight.w600,
-        letterSpacing: -0.1,
       ),
-      unselectedLabelStyle: GoogleFonts.inter(
+      unselectedLabelStyle: GoogleFonts.poppins(
         fontSize: 12,
         fontWeight: FontWeight.w500,
-        letterSpacing: -0.1,
       ),
     ),
 
-    // Toggle switches with brand colors
+    // Switch theme
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
           return primaryLight;
         }
-        return Color(0xFFBDBDBD);
+        return Color(0xFFCBD5E1);
       }),
       trackColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return primaryLight.withValues(alpha: 0.3);
+          return primaryLight.withValues(alpha: 0.4);
         }
-        return Color(0xFFE0E0E0);
+        return Color(0xFFE2E8F0);
       }),
     ),
 
@@ -322,20 +295,10 @@ class AppTheme {
         return Colors.transparent;
       }),
       checkColor: WidgetStateProperty.all(onPrimaryLight),
-      side: BorderSide(color: dividerLight, width: 2.0),
+      side: BorderSide(color: textSecondaryLight, width: 2.0),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4.0),
+        borderRadius: BorderRadius.circular(5.0),
       ),
-    ),
-
-    // Radio with brand colors
-    radioTheme: RadioThemeData(
-      fillColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return primaryLight;
-        }
-        return textSecondaryLight;
-      }),
     ),
 
     // Progress indicators
@@ -345,37 +308,13 @@ class AppTheme {
       circularTrackColor: dividerLight,
     ),
 
-    // Sliders
-    sliderTheme: SliderThemeData(
-      activeTrackColor: primaryLight,
-      thumbColor: primaryLight,
-      overlayColor: primaryLight.withValues(alpha: 0.2),
-      inactiveTrackColor: dividerLight,
-      valueIndicatorColor: primaryLight,
-    ),
-
-    // Tooltips
-    tooltipTheme: TooltipThemeData(
-      decoration: BoxDecoration(
-        color: textPrimaryLight.withValues(alpha: 0.9),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      textStyle: GoogleFonts.inter(
-        color: surfaceLight,
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        letterSpacing: -0.1,
-      ),
-    ),
-
-    // 🔔 Premium SnackBar - Modern Feedback
+    // SnackBar - Clear feedback
     snackBarTheme: SnackBarThemeData(
       backgroundColor: textPrimaryLight,
-      contentTextStyle: GoogleFonts.inter(
+      contentTextStyle: GoogleFonts.poppins(
         color: surfaceLight,
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        letterSpacing: -0.1,
       ),
       actionTextColor: secondaryLight,
       behavior: SnackBarBehavior.floating,
@@ -385,307 +324,248 @@ class AppTheme {
       elevation: 4.0,
     ),
 
-    // 📝 List Tiles
+    // List Tiles - Larger touch targets
     listTileTheme: ListTileThemeData(
       contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      titleTextStyle: GoogleFonts.inter(
+      minVerticalPadding: 12,
+      titleTextStyle: GoogleFonts.poppins(
         color: textPrimaryLight,
         fontSize: 16,
         fontWeight: FontWeight.w600,
-        letterSpacing: -0.2,
       ),
-      subtitleTextStyle: GoogleFonts.inter(
+      subtitleTextStyle: GoogleFonts.poppins(
         color: textSecondaryLight,
         fontSize: 14,
-        fontWeight: FontWeight.w500,
-        letterSpacing: -0.1,
+        fontWeight: FontWeight.w400,
       ),
     ),
 
-    // 🏷️ Premium Chip Theme - Rounded Tags
+    // Chip Theme
     chipTheme: ChipThemeData(
-      backgroundColor: dividerLight.withValues(alpha: 0.3),
+      backgroundColor: backgroundLight,
       selectedColor: primaryLight.withValues(alpha: 0.15),
-      labelStyle: GoogleFonts.inter(
+      labelStyle: GoogleFonts.poppins(
         color: textPrimaryLight,
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: FontWeight.w500,
-        letterSpacing: -0.1,
       ),
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
+        borderRadius: BorderRadius.circular(10.0),
+        side: BorderSide(color: dividerLight),
       ),
     ),
 
     dialogTheme: DialogThemeData(
-      backgroundColor: dialogLight,
+      backgroundColor: surfaceLight,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
+      ),
+      titleTextStyle: GoogleFonts.poppins(
+        color: textPrimaryLight,
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+      ),
+      contentTextStyle: GoogleFonts.poppins(
+        color: textSecondaryLight,
+        fontSize: 15,
+        fontWeight: FontWeight.w400,
+      ),
+    ),
+
+    // Bottom sheet
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: surfaceLight,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
     ),
   );
 
-  /// Dark theme maintaining brand consistency
+  /// Dark theme
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     useMaterial3: true,
     colorScheme: ColorScheme(
       brightness: Brightness.dark,
       primary: primaryDark,
-      onPrimary: onPrimaryDark,
+      onPrimary: Color(0xFF0F172A),
       primaryContainer: primaryVariantDark,
-      onPrimaryContainer: onPrimaryDark,
+      onPrimaryContainer: Color(0xFFDBEAFE),
       secondary: secondaryDark,
-      onSecondary: onSecondaryDark,
-      secondaryContainer: secondaryVariantDark,
-      onSecondaryContainer: onSecondaryDark,
-      tertiary: warningDark,
-      onTertiary: Color(0xFF000000),
-      tertiaryContainer: warningDark.withValues(alpha: 0.2),
-      onTertiaryContainer: warningDark,
+      onSecondary: Color(0xFF0F172A),
+      secondaryContainer: Color(0xFF065F46),
+      onSecondaryContainer: Color(0xFFD1FAE5),
+      tertiary: Color(0xFFFBBF24),
+      onTertiary: Color(0xFF0F172A),
+      tertiaryContainer: Color(0xFF92400E),
+      onTertiaryContainer: Color(0xFFFEF3C7),
       error: errorDark,
-      onError: onErrorDark,
+      onError: Color(0xFF0F172A),
       surface: surfaceDark,
-      onSurface: onSurfaceDark,
+      onSurface: textPrimaryDark,
       onSurfaceVariant: textSecondaryDark,
       outline: dividerDark,
       outlineVariant: dividerDark.withValues(alpha: 0.5),
-      shadow: shadowDark,
-      scrim: shadowDark,
+      shadow: Color(0x40000000),
+      scrim: Color(0x40000000),
       inverseSurface: surfaceLight,
-      onInverseSurface: onSurfaceLight,
+      onInverseSurface: textPrimaryLight,
       inversePrimary: primaryLight,
     ),
     scaffoldBackgroundColor: backgroundDark,
     cardColor: cardDark,
     dividerColor: dividerDark,
-
-    // AppBar theme for dark mode
     appBarTheme: AppBarTheme(
       backgroundColor: surfaceDark,
-      foregroundColor: onSurfaceDark,
-      elevation: 1.0,
+      foregroundColor: textPrimaryDark,
+      elevation: 0,
       centerTitle: true,
-      titleTextStyle: GoogleFonts.inter(
+      titleTextStyle: GoogleFonts.poppins(
         fontSize: 18,
         fontWeight: FontWeight.w600,
-        color: onSurfaceDark,
-        letterSpacing: -0.5,
+        color: textPrimaryDark,
       ),
-      iconTheme: IconThemeData(color: onSurfaceDark, size: 24),
+      iconTheme: IconThemeData(color: textPrimaryDark, size: 24),
     ),
-
-    // Card theme for dark mode
     cardTheme: CardTheme(
       color: cardDark,
-      elevation: 1.0,
-      shadowColor: shadowDark,
+      elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
+        borderRadius: BorderRadius.circular(16.0),
+        side: BorderSide(color: dividerDark, width: 1),
       ),
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     ),
-
-    // FAB theme for dark mode
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: secondaryDark,
-      foregroundColor: onSecondaryDark,
-      elevation: 2.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-    ),
-
-    // Button themes for dark mode
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        foregroundColor: onPrimaryDark,
-        backgroundColor: primaryDark,
-        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-        elevation: 1.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        textStyle: GoogleFonts.inter(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.2,
-        ),
-      ),
-    ),
-
-    // Typography for dark mode
-    textTheme: _buildPremiumTextTheme(isLight: false),
-
-    // Input decoration for dark mode
-    inputDecorationTheme: InputDecorationTheme(
-      fillColor: surfaceDark,
-      filled: true,
-      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
-        borderSide: BorderSide(color: dividerDark, width: 1.0),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
-        borderSide: BorderSide(color: dividerDark, width: 1.0),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
-        borderSide: BorderSide(color: primaryDark, width: 2.0),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
-        borderSide: BorderSide(color: errorDark, width: 1.0),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16.0),
-        borderSide: BorderSide(color: errorDark, width: 2.0),
-      ),
-      labelStyle: GoogleFonts.inter(
-        color: textSecondaryDark,
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        letterSpacing: -0.2,
-      ),
-      hintStyle: GoogleFonts.inter(
-        color: textDisabledDark,
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        letterSpacing: -0.2,
-      ),
-    ),
-
+    textTheme: _buildCleanTextTheme(isLight: false),
     dialogTheme: DialogThemeData(
-      backgroundColor: dialogDark,
+      backgroundColor: cardDark,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
     ),
   );
 
-  /// 🎨 Premium Text Theme - Inter Font for Crystal Clear Readability
-  static TextTheme _buildPremiumTextTheme({required bool isLight}) {
+  /// 🎨 Clean, Readable Text Theme using Poppins for friendly feel
+  static TextTheme _buildCleanTextTheme({required bool isLight}) {
     final Color textPrimary = isLight ? textPrimaryLight : textPrimaryDark;
-    final Color textSecondary =
-        isLight ? textSecondaryLight : textSecondaryDark;
+    final Color textSecondary = isLight ? textSecondaryLight : textSecondaryDark;
     final Color textLabel = isLight ? textLabelLight : textSecondaryDark;
 
     return TextTheme(
-      // Display styles - Large headings
-      displayLarge: GoogleFonts.inter(
-        fontSize: 57,
+      // Display styles - Big headings
+      displayLarge: GoogleFonts.poppins(
+        fontSize: 48,
         fontWeight: FontWeight.w700,
         color: textPrimary,
-        letterSpacing: -1.25,
-        height: 1.12,
+        letterSpacing: -1.5,
+        height: 1.15,
       ),
-      displayMedium: GoogleFonts.inter(
-        fontSize: 45,
-        fontWeight: FontWeight.w700,
-        color: textPrimary,
-        letterSpacing: -1.0,
-        height: 1.16,
-      ),
-      displaySmall: GoogleFonts.inter(
+      displayMedium: GoogleFonts.poppins(
         fontSize: 36,
-        fontWeight: FontWeight.w600,
-        color: textPrimary,
-        letterSpacing: -0.75,
-        height: 1.22,
-      ),
-
-      // Headlines - Section headers
-      headlineLarge: GoogleFonts.inter(
-        fontSize: 32,
         fontWeight: FontWeight.w700,
+        color: textPrimary,
+        letterSpacing: -0.8,
+        height: 1.2,
+      ),
+      displaySmall: GoogleFonts.poppins(
+        fontSize: 28,
+        fontWeight: FontWeight.w600,
         color: textPrimary,
         letterSpacing: -0.5,
         height: 1.25,
       ),
-      headlineMedium: GoogleFonts.inter(
-        fontSize: 28,
-        fontWeight: FontWeight.w700,
-        color: textPrimary,
-        letterSpacing: -0.5,
-        height: 1.29,
-      ),
-      headlineSmall: GoogleFonts.inter(
-        fontSize: 24,
-        fontWeight: FontWeight.w700,
-        color: textPrimary,
-        letterSpacing: -0.5,
-        height: 1.33,
-      ),
 
-      // Titles - Card headers, screen titles
-      titleLarge: GoogleFonts.inter(
-        fontSize: 22,
+      // Headlines - Section headers
+      headlineLarge: GoogleFonts.poppins(
+        fontSize: 26,
         fontWeight: FontWeight.w700,
         color: textPrimary,
-        letterSpacing: -0.5,
-        height: 1.27,
+        letterSpacing: -0.4,
+        height: 1.3,
       ),
-      titleMedium: GoogleFonts.inter(
-        fontSize: 16,
+      headlineMedium: GoogleFonts.poppins(
+        fontSize: 22,
+        fontWeight: FontWeight.w600,
+        color: textPrimary,
+        letterSpacing: -0.3,
+        height: 1.35,
+      ),
+      headlineSmall: GoogleFonts.poppins(
+        fontSize: 20,
         fontWeight: FontWeight.w600,
         color: textPrimary,
         letterSpacing: -0.2,
-        height: 1.50,
+        height: 1.4,
       ),
-      titleSmall: GoogleFonts.inter(
-        fontSize: 14,
+
+      // Titles
+      titleLarge: GoogleFonts.poppins(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        color: textPrimary,
+        letterSpacing: -0.2,
+        height: 1.4,
+      ),
+      titleMedium: GoogleFonts.poppins(
+        fontSize: 16,
         fontWeight: FontWeight.w600,
         color: textPrimary,
         letterSpacing: -0.1,
-        height: 1.43,
+        height: 1.45,
+      ),
+      titleSmall: GoogleFonts.poppins(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: textPrimary,
+        letterSpacing: 0,
+        height: 1.5,
       ),
 
       // Body text - Main content
-      bodyLarge: GoogleFonts.inter(
+      bodyLarge: GoogleFonts.poppins(
         fontSize: 16,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w400,
         color: textPrimary,
-        letterSpacing: -0.2,
-        height: 1.50,
+        letterSpacing: 0,
+        height: 1.5,
       ),
-      bodyMedium: GoogleFonts.inter(
+      bodyMedium: GoogleFonts.poppins(
         fontSize: 14,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w400,
         color: textPrimary,
-        letterSpacing: -0.1,
-        height: 1.43,
+        letterSpacing: 0,
+        height: 1.5,
       ),
-      bodySmall: GoogleFonts.inter(
+      bodySmall: GoogleFonts.poppins(
         fontSize: 12,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w400,
         color: textSecondary,
-        letterSpacing: -0.1,
-        height: 1.33,
+        letterSpacing: 0,
+        height: 1.5,
       ),
 
-      // Labels - Form labels, small text
-      labelLarge: GoogleFonts.inter(
+      // Labels
+      labelLarge: GoogleFonts.poppins(
         fontSize: 14,
         fontWeight: FontWeight.w600,
         color: textPrimary,
-        letterSpacing: -0.1,
-        height: 1.43,
+        letterSpacing: 0,
+        height: 1.4,
       ),
-      labelMedium: GoogleFonts.inter(
+      labelMedium: GoogleFonts.poppins(
         fontSize: 12,
-        fontWeight: FontWeight.w600,
-        color: textLabel,
-        letterSpacing: -0.1,
-        height: 1.33,
-      ),
-      labelSmall: GoogleFonts.inter(
-        fontSize: 11,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w500,
         color: textLabel,
         letterSpacing: 0,
-        height: 1.45,
+        height: 1.4,
+      ),
+      labelSmall: GoogleFonts.poppins(
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        color: textLabel,
+        letterSpacing: 0,
+        height: 1.4,
       ),
     );
   }
@@ -696,7 +576,7 @@ class AppTheme {
     double fontSize = 16,
     FontWeight fontWeight = FontWeight.w600,
   }) {
-    return GoogleFonts.robotoMono(
+    return GoogleFonts.jetBrainsMono(
       fontSize: fontSize,
       fontWeight: fontWeight,
       color: isLight ? textPrimaryLight : textPrimaryDark,
@@ -704,19 +584,19 @@ class AppTheme {
     );
   }
 
-  /// 🎯 Status Color Helper - Karigar Workflow States
+  /// 🎯 Status Color Helper
   static Color getStatusColor(String status, {bool isLight = true}) {
     switch (status.toLowerCase()) {
       case 'completed':
       case 'paid':
       case 'success':
       case 'active':
-        return isLight ? successLight : successDark;
+        return isLight ? successLight : secondaryDark;
       case 'pending':
       case 'in_progress':
       case 'warning':
       case 'partial':
-        return isLight ? warningLight : warningDark;
+        return isLight ? warningLight : Color(0xFFFBBF24);
       case 'failed':
       case 'unpaid':
       case 'error':
@@ -730,13 +610,12 @@ class AppTheme {
     }
   }
 
-  /// 🌈 Premium Gradient Utilities
+  /// 🌈 Gradient Utilities
   static LinearGradient getPrimaryGradient() {
     return LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: primaryGradient,
-      stops: [0.0, 0.5, 1.0],
     );
   }
 
@@ -745,7 +624,6 @@ class AppTheme {
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: successGradient,
-      stops: [0.0, 0.5, 1.0],
     );
   }
 
@@ -754,21 +632,11 @@ class AppTheme {
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: warningGradient,
-      stops: [0.0, 0.5, 1.0],
     );
   }
 
-  static LinearGradient getAccentGradient() {
-    return LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: accentGradient,
-      stops: [0.0, 1.0],
-    );
-  }
-
-  /// 💎 Premium Shadow Utilities - Soft 5% Opacity
-  static List<BoxShadow> getSoftShadow({Color? color, double opacity = 0.05}) {
+  /// 💎 Clean Shadow Utilities
+  static List<BoxShadow> getSoftShadow({Color? color, double opacity = 0.08}) {
     return [
       BoxShadow(
         color: (color ?? Colors.black).withValues(alpha: opacity),
@@ -776,17 +644,10 @@ class AppTheme {
         blurRadius: 12,
         spreadRadius: 0,
       ),
-      BoxShadow(
-        color: Colors.black.withValues(alpha: 0.02),
-        offset: Offset(0, 2),
-        blurRadius: 6,
-        spreadRadius: 0,
-      ),
     ];
   }
 
-  static List<BoxShadow> getElevatedShadow(
-      {Color? color, double opacity = 0.08}) {
+  static List<BoxShadow> getElevatedShadow({Color? color, double opacity = 0.12}) {
     return [
       BoxShadow(
         color: (color ?? Colors.black).withValues(alpha: opacity),
@@ -795,9 +656,9 @@ class AppTheme {
         spreadRadius: 0,
       ),
       BoxShadow(
-        color: Colors.black.withValues(alpha: 0.04),
+        color: (color ?? Colors.black).withValues(alpha: 0.04),
         offset: Offset(0, 4),
-        blurRadius: 12,
+        blurRadius: 8,
         spreadRadius: 0,
       ),
     ];

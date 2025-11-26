@@ -4,10 +4,6 @@ import 'package:sizer/sizer.dart';
 import '../../core/app_export.dart';
 import '../../services/karigar_service.dart';
 import '../../services/upad_service.dart';
-import './widgets/amount_input_widget.dart';
-import './widgets/karigar_selection_widget.dart';
-import './widgets/payment_mode_widget.dart';
-import './widgets/photo_proof_widget.dart';
 
 class UpadEntryScreen extends StatefulWidget {
   final Map<String, dynamic>? upadData;
@@ -36,34 +32,21 @@ class _UpadEntryScreenState extends State<UpadEntryScreen> {
 
   // Form state
   String? _selectedKarigarId;
-  String _selectedPaymentType = 'advance';
-  String _selectedStatus = 'paid';
+  Map<String, dynamic>? _selectedKarigar;
+  String _selectedPaymentMode = 'cash';
   DateTime _selectedDate = DateTime.now();
-  String? _proofDocumentPath;
   bool _isLoading = false;
-  bool _isDraftSaved = false;
+  bool _isDataLoading = true;
   String? _error;
 
   // Data
   List<Map<String, dynamic>> _availableKarigars = [];
-  Map<String, dynamic>? _karigarBalance;
 
-  // Validation errors
-  String? _amountError;
-  String? _reasonError;
-  String? _karigarError;
-
-  final List<String> _paymentTypes = [
-    'advance',
-    'full_payment',
-    'bonus',
-    'penalty'
-  ];
-  final List<String> _paymentStatuses = [
-    'pending',
-    'paid',
-    'partial',
-    'cancelled'
+  final List<Map<String, dynamic>> _paymentModes = [
+    {'id': 'cash', 'label': 'Cash', 'icon': Icons.money_rounded},
+    {'id': 'upi', 'label': 'UPI', 'icon': Icons.phone_android_rounded},
+    {'id': 'bank', 'label': 'Bank Transfer', 'icon': Icons.account_balance_rounded},
+    {'id': 'cheque', 'label': 'Cheque', 'icon': Icons.receipt_long_rounded},
   ];
 
   @override
@@ -71,7 +54,6 @@ class _UpadEntryScreenState extends State<UpadEntryScreen> {
     super.initState();
     _initializeControllers();
     _loadInitialData();
-    _loadUpadData();
   }
 
   @override
@@ -90,101 +72,24 @@ class _UpadEntryScreenState extends State<UpadEntryScreen> {
   }
 
   Future<void> _loadInitialData() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
     try {
-      // Load available karigars
       final karigars = await _karigarService.getAvailableKarigars();
-
       setState(() {
         _availableKarigars = karigars;
-        _isLoading = false;
+        _isDataLoading = false;
       });
     } catch (error) {
       setState(() {
-        _error = 'Failed to load data: ${error.toString()}';
-        _isLoading = false;
+        _error = 'Failed to load karigars';
+        _isDataLoading = false;
       });
     }
   }
-
-  void _loadUpadData() {
-    if (widget.upadData != null) {
-      final data = widget.upadData!;
-      _amountController.text = data['amount']?.toString() ?? '';
-      _reasonController.text = data['reason'] ?? '';
-      _notesController.text = data['notes'] ?? '';
-      _selectedKarigarId = data['karigar_id'];
-      _selectedPaymentType = data['payment_type'] ?? 'advance';
-      _selectedStatus = data['status'] ?? 'paid';
-      _proofDocumentPath = data['proof_document_url'];
-
-      if (data['payment_date'] != null) {
-        _selectedDate = DateTime.parse(data['payment_date']);
-      }
-    }
-  }
-
-  bool get _isEditing => widget.upadData != null;
-
-  String get _screenTitle => _isEditing ? 'Edit Upad Entry' : 'Add Upad Entry';
 
   bool get _isFormValid {
     return _selectedKarigarId != null &&
         _amountController.text.trim().isNotEmpty &&
-        _reasonController.text.trim().isNotEmpty &&
-        _amountError == null &&
-        _reasonError == null &&
-        _karigarError == null;
-  }
-
-  void _validateAmount(String value) {
-    setState(() {
-      if (value.trim().isEmpty) {
-        _amountError = 'Amount is required';
-      } else {
-        final amount = double.tryParse(value.trim());
-        if (amount == null) {
-          _amountError = 'Enter valid amount';
-        } else if (amount <= 0) {
-          _amountError = 'Amount must be greater than 0';
-        } else if (amount > 100000) {
-          _amountError = 'Amount seems too high';
-        } else {
-          _amountError = null;
-        }
-      }
-    });
-  }
-
-  void _validateReason(String value) {
-    setState(() {
-      if (value.trim().isEmpty) {
-        _reasonError = 'Reason is required';
-      } else if (value.trim().length < 3) {
-        _reasonError = 'Reason must be at least 3 characters';
-      } else {
-        _reasonError = null;
-      }
-    });
-  }
-
-  Future<void> _loadKarigarBalance() async {
-    if (_selectedKarigarId == null) return;
-
-    try {
-      final balance =
-          await _upadService.getKarigarPaymentSummary(_selectedKarigarId!);
-      setState(() {
-        _karigarBalance = balance;
-      });
-    } catch (error) {
-      // Handle error silently or show a small message
-      print('Failed to load karigar balance: $error');
-    }
+        _reasonController.text.trim().isNotEmpty;
   }
 
   Future<void> _selectDate() async {
@@ -196,54 +101,35 @@ class _UpadEntryScreenState extends State<UpadEntryScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: Theme.of(context).colorScheme.copyWith(
-                  primary: AppTheme.lightTheme.primaryColor,
-                ),
+            colorScheme: ColorScheme.light(
+              primary: AppTheme.primaryLight,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: AppTheme.textPrimaryLight,
+            ),
           ),
           child: child!,
         );
       },
     );
 
-    if (picked != null && picked != _selectedDate) {
+    if (picked != null) {
       setState(() {
         _selectedDate = picked;
       });
     }
   }
 
-  void _saveDraft() {
+  void _selectKarigar(Map<String, dynamic> karigar) {
     setState(() {
-      _isDraftSaved = true;
+      _selectedKarigarId = karigar['id'];
+      _selectedKarigar = karigar;
     });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Draft saved successfully'),
-        backgroundColor: AppTheme.successLight,
-        duration: Duration(seconds: 2),
-      ),
-    );
+    Navigator.pop(context);
   }
 
   Future<void> _saveUpadEntry() async {
-    // Validate required fields
-    _validateAmount(_amountController.text);
-    _validateReason(_reasonController.text);
-
-    if (_selectedKarigarId == null) {
-      setState(() {
-        _karigarError = 'Please select a karigar';
-      });
-    } else {
-      setState(() {
-        _karigarError = null;
-      });
-    }
-
-    if (!_isFormValid) {
-      return;
-    }
+    if (!_isFormValid) return;
 
     setState(() {
       _isLoading = true;
@@ -251,54 +137,45 @@ class _UpadEntryScreenState extends State<UpadEntryScreen> {
     });
 
     try {
-      // Prepare upad entry data
       final upadData = {
         'karigar_id': _selectedKarigarId!,
         'amount': double.parse(_amountController.text.trim()),
         'payment_date': _selectedDate.toIso8601String().split('T')[0],
-        'payment_type': _selectedPaymentType,
-        'status': _selectedStatus,
+        'payment_type': _selectedPaymentMode,
+        'status': 'paid',
         'reason': _reasonController.text.trim(),
         'notes': _notesController.text.trim().isNotEmpty
             ? _notesController.text.trim()
             : null,
-        'proof_document_url': _proofDocumentPath,
       };
 
-      Map<String, dynamic> result;
+      await _upadService.createUpadPayment(upadData);
 
-      if (_isEditing) {
-        result = await _upadService.updateUpadPayment(
-          widget.upadData!['id'],
-          upadData,
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
+                SizedBox(width: 2.w),
+                Text('Upad payment saved successfully!'),
+              ],
+            ),
+            backgroundColor: AppTheme.successLight,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         );
-      } else {
-        result = await _upadService.createUpadPayment(upadData);
+        Navigator.pop(context, true);
       }
-
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_isEditing
-              ? 'Upad entry updated successfully'
-              : 'Upad entry added successfully'),
-          backgroundColor: AppTheme.successLight,
-          duration: Duration(seconds: 2),
-        ),
-      );
-
-      // Navigate back with result
-      Navigator.pop(context, result);
     } catch (error) {
       setState(() {
         _error = error.toString();
       });
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to save upad entry: ${error.toString()}'),
+          content: Text('Failed to save: ${error.toString()}'),
           backgroundColor: AppTheme.errorLight,
-          duration: Duration(seconds: 3),
         ),
       );
     } finally {
@@ -311,200 +188,515 @@ class _UpadEntryScreenState extends State<UpadEntryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.backgroundLight,
       appBar: AppBar(
-        title: Text(_screenTitle),
+        title: Text('Pay Upad'),
+        backgroundColor: AppTheme.surfaceLight,
+        elevation: 0,
         leading: IconButton(
+          icon: Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.pop(context),
-          icon: CustomIconWidget(
-            iconName: 'arrow_back',
-            color: AppTheme.lightTheme.appBarTheme.foregroundColor!,
-            size: 24,
-          ),
         ),
-        actions: [
-          if (!_isDraftSaved)
-            TextButton(
-              onPressed: _saveDraft,
-              child: Text(
-                'Save Draft',
-                style: TextStyle(
-                  color: AppTheme.lightTheme.appBarTheme.foregroundColor,
-                ),
-              ),
-            ),
-        ],
       ),
-      body: _isLoading && _availableKarigars.isEmpty
+      body: _isDataLoading
           ? Center(
-              child: CircularProgressIndicator(
-                color: AppTheme.lightTheme.colorScheme.primary,
-              ),
+              child: CircularProgressIndicator(color: AppTheme.primaryLight),
             )
           : Form(
               key: _formKey,
-              child: Column(
-                children: [
-                  if (_error != null)
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(4.w),
-                      color: AppTheme.errorLight,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                padding: EdgeInsets.all(5.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Date Selection
+                    _buildSectionCard(
+                      title: 'Payment Date',
+                      icon: Icons.calendar_today_rounded,
+                      child: _buildDateSelector(),
+                    ),
+
+                    SizedBox(height: 2.h),
+
+                    // Karigar Selection
+                    _buildSectionCard(
+                      title: 'Select Karigar',
+                      icon: Icons.person_rounded,
+                      child: _buildKarigarSelector(),
+                    ),
+
+                    SizedBox(height: 2.h),
+
+                    // Payment Mode
+                    _buildSectionCard(
+                      title: 'Payment Mode',
+                      icon: Icons.payment_rounded,
+                      child: _buildPaymentModeSelector(),
+                    ),
+
+                    SizedBox(height: 2.h),
+
+                    // Amount Input
+                    _buildSectionCard(
+                      title: 'Amount',
+                      icon: Icons.currency_rupee_rounded,
+                      child: _buildAmountInput(),
+                    ),
+
+                    SizedBox(height: 2.h),
+
+                    // Reason Input
+                    _buildSectionCard(
+                      title: 'Reason',
+                      icon: Icons.description_rounded,
+                      child: _buildReasonInput(),
+                    ),
+
+                    SizedBox(height: 2.h),
+
+                    // Notes (Optional)
+                    _buildSectionCard(
+                      title: 'Notes (Optional)',
+                      icon: Icons.notes_rounded,
+                      child: _buildNotesInput(),
+                    ),
+
+                    SizedBox(height: 12.h),
+                  ],
+                ),
+              ),
+            ),
+      bottomNavigationBar: _buildBottomBar(),
+    );
+  }
+
+  Widget _buildSectionCard({
+    required String title,
+    required IconData icon,
+    required Widget child,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(4.w),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceLight,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.dividerLight),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(2.w),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, color: AppTheme.primaryLight, size: 18),
+              ),
+              SizedBox(width: 3.w),
+              Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.textPrimaryLight,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 2.h),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateSelector() {
+    return GestureDetector(
+      onTap: _selectDate,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+        decoration: BoxDecoration(
+          color: AppTheme.backgroundLight,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppTheme.dividerLight),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.event_rounded,
+              color: AppTheme.primaryLight,
+              size: 22,
+            ),
+            SizedBox(width: 3.w),
+            Text(
+              '${_selectedDate.day} ${_getMonthName(_selectedDate.month)} ${_selectedDate.year}',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppTheme.textPrimaryLight,
+              ),
+            ),
+            Spacer(),
+            Text(
+              'Tap to change',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: AppTheme.textSecondaryLight,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getMonthName(int month) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return months[month - 1];
+  }
+
+  Widget _buildKarigarSelector() {
+    return GestureDetector(
+      onTap: _showKarigarPicker,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+        decoration: BoxDecoration(
+          color: AppTheme.backgroundLight,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: _selectedKarigar != null ? AppTheme.primaryLight : AppTheme.dividerLight,
+            width: _selectedKarigar != null ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 12.w,
+              height: 12.w,
+              decoration: BoxDecoration(
+                color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: _selectedKarigar != null
+                  ? Center(
                       child: Text(
-                        _error!,
-                        style: TextStyle(color: Colors.white),
-                        textAlign: TextAlign.center,
+                        _getInitials(_selectedKarigar!['full_name'] ?? ''),
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: AppTheme.primaryLight,
+                        ),
+                      ),
+                    )
+                  : Icon(
+                      Icons.person_add_rounded,
+                      color: AppTheme.primaryLight,
+                    ),
+            ),
+            SizedBox(width: 3.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _selectedKarigar?['full_name'] ?? 'Select a Karigar',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: _selectedKarigar != null
+                          ? AppTheme.textPrimaryLight
+                          : AppTheme.textSecondaryLight,
+                    ),
+                  ),
+                  if (_selectedKarigar != null)
+                    Text(
+                      _selectedKarigar!['phone'] ?? '',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: AppTheme.textSecondaryLight,
                       ),
                     ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      controller: _scrollController,
-                      padding: EdgeInsets.only(bottom: 12.h),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 1.h),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: AppTheme.textLabelLight,
+              size: 16,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-                          // Date Selection
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 4.w, vertical: 1.h),
-                            padding: EdgeInsets.all(4.w),
-                            decoration: BoxDecoration(
-                              color: AppTheme.lightTheme.cardColor,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: AppTheme.getSoftShadow(),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Payment Date',
-                                  style: AppTheme
-                                      .lightTheme.textTheme.titleMedium
-                                      ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                SizedBox(height: 1.h),
-                                GestureDetector(
-                                  onTap: _selectDate,
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 4.w, vertical: 3.h),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: AppTheme.dividerLight),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        CustomIconWidget(
-                                          iconName: 'calendar_today',
-                                          size: 24,
-                                          color: AppTheme
-                                              .lightTheme.colorScheme.primary,
-                                        ),
-                                        SizedBox(width: 3.w),
-                                        Text(
-                                          '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
-                                          style: AppTheme
-                                              .lightTheme.textTheme.bodyLarge,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+  String _getInitials(String name) {
+    final parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return name.isNotEmpty ? name[0].toUpperCase() : '?';
+  }
 
-                          // Karigar Selection
-                          KarigarSelectionWidget(
-                            karigars: _availableKarigars,
-                            selectedKarigarId: _selectedKarigarId,
-                            error: _karigarError,
-                            onKarigarSelected: (karigarId) {
-                              setState(() {
-                                _selectedKarigarId = karigarId;
-                                _karigarError = null;
-                              });
-                              _loadKarigarBalance();
-                            },
-                            karigarBalance: _karigarBalance,
-                          ),
-
-                          // Payment Mode
-                          PaymentModeWidget(
-                            selectedPaymentMode: _selectedPaymentType,
-                            onPaymentModeChanged: (paymentType) {
-                              setState(() {
-                                _selectedPaymentType = paymentType;
-                              });
-                            },
-                            upiController: TextEditingController(),
-                            chequeController: TextEditingController(),
-                          ),
-
-                          // Amount Input
-                          AmountInputWidget(
-                            amountController: _amountController,
-                            onAmountChanged: _validateAmount,
-                            errorText: _amountError,
-                          ),
-
-                          // Photo Proof
-                          PhotoProofWidget(
-                            selectedImages: [],
-                            onImagesChanged: (images) {
-                              setState(() {
-                                _proofDocumentPath = images.isNotEmpty ? images.first.path : null;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
+  void _showKarigarPicker() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: 70.h,
+        decoration: BoxDecoration(
+          color: AppTheme.surfaceLight,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: 1.5.h),
+              width: 12.w,
+              height: 0.5.h,
+              decoration: BoxDecoration(
+                color: AppTheme.dividerLight,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(5.w),
+              child: Row(
+                children: [
+                  Text(
+                    'Select Karigar',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.textPrimaryLight,
                     ),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(Icons.close_rounded),
                   ),
                 ],
               ),
             ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(4.w),
-        decoration: BoxDecoration(
-          color: AppTheme.lightTheme.scaffoldBackgroundColor,
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme.shadowLight,
-              blurRadius: 8,
-              offset: Offset(0, -2),
+            Divider(height: 1),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(vertical: 1.h),
+                itemCount: _availableKarigars.length,
+                itemBuilder: (context, index) {
+                  final karigar = _availableKarigars[index];
+                  final isSelected = karigar['id'] == _selectedKarigarId;
+
+                  return ListTile(
+                    onTap: () => _selectKarigar(karigar),
+                    leading: Container(
+                      width: 12.w,
+                      height: 12.w,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AppTheme.primaryLight
+                            : AppTheme.primaryLight.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Text(
+                          _getInitials(karigar['full_name'] ?? ''),
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: isSelected ? Colors.white : AppTheme.primaryLight,
+                          ),
+                        ),
+                      ),
+                    ),
+                    title: Text(
+                      karigar['full_name'] ?? '',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.textPrimaryLight,
+                      ),
+                    ),
+                    subtitle: Text(
+                      karigar['phone'] ?? '',
+                      style: GoogleFonts.poppins(
+                        color: AppTheme.textSecondaryLight,
+                        fontSize: 12,
+                      ),
+                    ),
+                    trailing: isSelected
+                        ? Icon(Icons.check_circle_rounded, color: AppTheme.primaryLight)
+                        : null,
+                  );
+                },
+              ),
             ),
           ],
         ),
-        child: SafeArea(
-          child: SizedBox(
-            width: double.infinity,
-            height: 6.h,
-            child: ElevatedButton(
-              onPressed: _isFormValid && !_isLoading ? _saveUpadEntry : null,
-              child: _isLoading
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          AppTheme.lightTheme.colorScheme.onPrimary,
+      ),
+    );
+  }
+
+  Widget _buildPaymentModeSelector() {
+    return Wrap(
+      spacing: 2.w,
+      runSpacing: 1.5.h,
+      children: _paymentModes.map((mode) {
+        final isSelected = _selectedPaymentMode == mode['id'];
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _selectedPaymentMode = mode['id'] as String;
+            });
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h),
+            decoration: BoxDecoration(
+              color: isSelected ? AppTheme.primaryLight : AppTheme.backgroundLight,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isSelected ? AppTheme.primaryLight : AppTheme.dividerLight,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  mode['icon'] as IconData,
+                  size: 18,
+                  color: isSelected ? Colors.white : AppTheme.textSecondaryLight,
+                ),
+                SizedBox(width: 2.w),
+                Text(
+                  mode['label'] as String,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: isSelected ? Colors.white : AppTheme.textSecondaryLight,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildAmountInput() {
+    return TextFormField(
+      controller: _amountController,
+      keyboardType: TextInputType.number,
+      style: GoogleFonts.poppins(
+        fontSize: 28,
+        fontWeight: FontWeight.w700,
+        color: AppTheme.textPrimaryLight,
+      ),
+      decoration: InputDecoration(
+        hintText: '0',
+        hintStyle: GoogleFonts.poppins(
+          fontSize: 28,
+          fontWeight: FontWeight.w700,
+          color: AppTheme.textLabelLight,
+        ),
+        prefixIcon: Padding(
+          padding: EdgeInsets.only(left: 4.w, right: 2.w),
+          child: Text(
+            '₹',
+            style: GoogleFonts.poppins(
+              fontSize: 28,
+              fontWeight: FontWeight.w700,
+              color: AppTheme.primaryLight,
+            ),
+          ),
+        ),
+        prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        contentPadding: EdgeInsets.symmetric(vertical: 1.h),
+      ),
+    );
+  }
+
+  Widget _buildReasonInput() {
+    return TextFormField(
+      controller: _reasonController,
+      style: GoogleFonts.poppins(
+        fontSize: 15,
+        color: AppTheme.textPrimaryLight,
+      ),
+      decoration: InputDecoration(
+        hintText: 'e.g., Weekly advance, Festival bonus...',
+        contentPadding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+      ),
+    );
+  }
+
+  Widget _buildNotesInput() {
+    return TextFormField(
+      controller: _notesController,
+      maxLines: 3,
+      style: GoogleFonts.poppins(
+        fontSize: 15,
+        color: AppTheme.textPrimaryLight,
+      ),
+      decoration: InputDecoration(
+        hintText: 'Add any additional notes...',
+        contentPadding: EdgeInsets.all(4.w),
+      ),
+    );
+  }
+
+  Widget _buildBottomBar() {
+    return Container(
+      padding: EdgeInsets.all(5.w),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceLight,
+        border: Border(top: BorderSide(color: AppTheme.dividerLight)),
+      ),
+      child: SafeArea(
+        child: SizedBox(
+          width: double.infinity,
+          height: 56,
+          child: ElevatedButton(
+            onPressed: _isFormValid && !_isLoading ? _saveUpadEntry : null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.successLight,
+              disabledBackgroundColor: AppTheme.dividerLight,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+            child: _isLoading
+                ? SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.5,
+                    ),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.payments_rounded, color: Colors.white),
+                      SizedBox(width: 2.w),
+                      Text(
+                        'Pay Upad',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
-                    )
-                  : Text(
-                      _isEditing ? 'Update Upad Entry' : 'Save Upad Entry',
-                      style:
-                          AppTheme.lightTheme.textTheme.titleMedium?.copyWith(
-                        color: AppTheme.lightTheme.colorScheme.onPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-            ),
+                    ],
+                  ),
           ),
         ),
       ),
