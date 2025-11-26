@@ -155,7 +155,7 @@ class AppTheme {
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     ),
 
-    // 🎯 Premium FAB Theme
+    // 🎯 Premium FAB Theme with Better Size
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: accentGreenLight,
       foregroundColor: onPrimaryLight,
@@ -163,25 +163,31 @@ class AppTheme {
       focusElevation: 0,
       hoverElevation: 0,
       highlightElevation: 0,
+      iconSize: 28, // Larger icon for better visibility
+      sizeConstraints: BoxConstraints.tightFor(
+        width: 64.0, // Larger FAB for easier tapping
+        height: 64.0,
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
     ),
 
-    // 🔘 Premium Button Themes - Modern Interactions
+    // 🔘 Premium Button Themes - Modern Interactions with Better Touch Targets
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         foregroundColor: onPrimaryLight,
         backgroundColor: primaryLight,
-        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 18), // Increased for better touch
         elevation: 0,
         shadowColor: Colors.transparent,
+        minimumSize: Size(120, 54), // Minimum size for accessibility
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),
         textStyle: GoogleFonts.inter(
           fontSize: 16,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700, // Bolder for better readability
           letterSpacing: -0.2,
         ),
       ),
@@ -190,14 +196,15 @@ class AppTheme {
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: primaryLight,
-        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-        side: BorderSide(color: primaryLight, width: 1.5),
+        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 18),
+        minimumSize: Size(120, 54), // Better touch target
+        side: BorderSide(color: primaryLight, width: 2), // Thicker border for visibility
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),
         textStyle: GoogleFonts.inter(
           fontSize: 16,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
           letterSpacing: -0.2,
         ),
       ),
@@ -206,13 +213,14 @@ class AppTheme {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: primaryLight,
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        minimumSize: Size(80, 48), // Better touch target
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
         textStyle: GoogleFonts.inter(
           fontSize: 16,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
           letterSpacing: -0.2,
         ),
       ),

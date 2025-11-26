@@ -110,43 +110,74 @@ class _LoginScreenState extends State<LoginScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 2.h),
+                    SizedBox(height: 3.h),
 
-                    // App Logo and Branding
+                    // Enhanced App Logo and Branding
                     Center(
                       child: Column(
                         children: [
-                          Container(
-                            width: 25.w,
-                            height: 25.w,
-                            decoration: BoxDecoration(
-                              gradient: AppTheme.getPrimaryGradient(),
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: AppTheme.getElevatedShadow(),
-                            ),
-                            child: Icon(
-                              Icons.precision_manufacturing_rounded,
-                              color: Colors.white,
-                              size: 45,
-                            ),
+                          // Animated Logo Container
+                          TweenAnimationBuilder<double>(
+                            duration: Duration(milliseconds: 800),
+                            tween: Tween(begin: 0.0, end: 1.0),
+                            curve: Curves.elasticOut,
+                            builder: (context, value, child) {
+                              return Transform.scale(
+                                scale: value,
+                                child: Container(
+                                  width: 28.w,
+                                  height: 28.w,
+                                  decoration: BoxDecoration(
+                                    gradient: AppTheme.getPrimaryGradient(),
+                                    borderRadius: BorderRadius.circular(24),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppTheme.primaryLight.withValues(alpha: 0.3),
+                                        offset: Offset(0, 8),
+                                        blurRadius: 24,
+                                        spreadRadius: 0,
+                                      ),
+                                      BoxShadow(
+                                        color: AppTheme.primaryLight.withValues(alpha: 0.15),
+                                        offset: Offset(0, 4),
+                                        blurRadius: 12,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.business_center_rounded,
+                                    color: Colors.white,
+                                    size: 48,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                           SizedBox(height: 3.h),
                           Text(
                             'Vekariya Brothers',
                             style: GoogleFonts.inter(
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.w800,
+                              fontSize: 26.sp,
+                              fontWeight: FontWeight.w900,
                               color: AppTheme.textPrimaryLight,
                               letterSpacing: -0.5,
                             ),
                           ),
-                          Text(
-                            'Karigar Work & Finance Manager',
-                            style: GoogleFonts.inter(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppTheme.textSecondaryLight,
-                              letterSpacing: -0.1,
+                          SizedBox(height: 0.8.h),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              '👔 Worker & Finance Manager',
+                              style: GoogleFonts.inter(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.primaryLight,
+                                letterSpacing: -0.1,
+                              ),
                             ),
                           ),
                         ],
@@ -155,23 +186,24 @@ class _LoginScreenState extends State<LoginScreen>
 
                     SizedBox(height: 5.h),
 
-                    // Welcome Text
+                    // Enhanced Welcome Text
                     Text(
-                      'Welcome Back',
+                      'Welcome Back! 👋',
                       style: GoogleFonts.inter(
                         fontSize: 28.sp,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w900,
                         color: AppTheme.textPrimaryLight,
                         letterSpacing: -0.5,
                       ),
                     ),
                     SizedBox(height: 1.h),
                     Text(
-                      'Sign in to manage your textile workshop',
+                      'Sign in to manage your workers and track daily work',
                       style: GoogleFonts.inter(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                         color: AppTheme.textSecondaryLight,
+                        height: 1.4,
                       ),
                     ),
 
@@ -363,17 +395,25 @@ class _LoginScreenState extends State<LoginScreen>
                       ),
                     ),
 
-                    SizedBox(height: 4.h),
+                    SizedBox(height: 3.h),
 
-                    // Demo Credentials Section
+                    // Enhanced Demo Credentials Section
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(4.w),
+                      padding: EdgeInsets.all(5.w),
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppTheme.primaryLight.withValues(alpha: 0.08),
+                            AppTheme.primaryLight.withValues(alpha: 0.03),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                          color: AppTheme.primaryLight.withValues(alpha: 0.2),
+                          width: 2,
                         ),
                         boxShadow: AppTheme.getSoftShadow(),
                       ),
@@ -382,32 +422,45 @@ class _LoginScreenState extends State<LoginScreen>
                         children: [
                           Row(
                             children: [
-                              Icon(
-                                Icons.info_outline,
-                                color: AppTheme.primaryLight,
-                                size: 20,
+                              Container(
+                                padding: EdgeInsets.all(2.w),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primaryLight,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  Icons.touch_app_rounded,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
                               ),
-                              SizedBox(width: 2.w),
-                              Text(
-                                'Demo Credentials',
-                                style: GoogleFonts.inter(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppTheme.textPrimaryLight,
+                              SizedBox(width: 3.w),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Quick Login',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w800,
+                                        color: AppTheme.textPrimaryLight,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Tap any account to login instantly',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppTheme.textSecondaryLight,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                           SizedBox(height: 2.h),
-                          Text(
-                            'Use these credentials to test the application:',
-                            style: GoogleFonts.inter(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppTheme.textSecondaryLight,
-                            ),
-                          ),
-                          SizedBox(height: 1.5.h),
                           ..._authService
                               .getDemoCredentials()
                               .map(
@@ -418,37 +471,90 @@ class _LoginScreenState extends State<LoginScreen>
                                   ),
                                   child: Container(
                                     width: double.infinity,
-                                    padding: EdgeInsets.all(3.w),
-                                    margin: EdgeInsets.only(bottom: 1.h),
+                                    padding: EdgeInsets.all(4.w),
+                                    margin: EdgeInsets.only(bottom: 1.5.h),
                                     decoration: BoxDecoration(
-                                      color: AppTheme.primaryLight
-                                          .withValues(alpha: 0.05),
-                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
                                       border: Border.all(
                                         color: AppTheme.primaryLight
-                                            .withValues(alpha: 0.1),
+                                            .withValues(alpha: 0.15),
+                                        width: 1.5,
                                       ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: AppTheme.primaryLight.withValues(alpha: 0.08),
+                                          offset: Offset(0, 2),
+                                          blurRadius: 8,
+                                        ),
+                                      ],
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                    child: Row(
                                       children: [
-                                        Text(
-                                          '${cred['role']} - ${cred['name']}',
-                                          style: GoogleFonts.inter(
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppTheme.textPrimaryLight,
+                                        Container(
+                                          padding: EdgeInsets.all(2.5.w),
+                                          decoration: BoxDecoration(
+                                            gradient: AppTheme.getPrimaryGradient(),
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Icon(
+                                            Icons.person_rounded,
+                                            color: Colors.white,
+                                            size: 24,
                                           ),
                                         ),
-                                        SizedBox(height: 0.5.h),
-                                        Text(
-                                          '${cred['email']} / ${cred['password']}',
-                                          style: GoogleFonts.inter(
-                                            fontSize: 11.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppTheme.textSecondaryLight,
+                                        SizedBox(width: 3.w),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '${cred['role']} Account',
+                                                style: GoogleFonts.inter(
+                                                  fontSize: 13.sp,
+                                                  fontWeight: FontWeight.w800,
+                                                  color: AppTheme.textPrimaryLight,
+                                                ),
+                                              ),
+                                              SizedBox(height: 0.3.h),
+                                              Text(
+                                                cred['name']!,
+                                                style: GoogleFonts.inter(
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: AppTheme.primaryLight,
+                                                ),
+                                              ),
+                                              SizedBox(height: 0.5.h),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.email_outlined,
+                                                    size: 14,
+                                                    color: AppTheme.textLabelLight,
+                                                  ),
+                                                  SizedBox(width: 1.w),
+                                                  Expanded(
+                                                    child: Text(
+                                                      cred['email']!,
+                                                      style: GoogleFonts.inter(
+                                                        fontSize: 11.sp,
+                                                        fontWeight: FontWeight.w500,
+                                                        color: AppTheme.textSecondaryLight,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: AppTheme.primaryLight,
+                                          size: 18,
                                         ),
                                       ],
                                     ),
@@ -456,6 +562,41 @@ class _LoginScreenState extends State<LoginScreen>
                                 ),
                               )
                               .toList(),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 3.h),
+
+                    // Help Section
+                    Container(
+                      padding: EdgeInsets.all(4.w),
+                      decoration: BoxDecoration(
+                        color: AppTheme.successLight.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: AppTheme.successLight.withValues(alpha: 0.2),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.lightbulb_rounded,
+                            color: AppTheme.successLight,
+                            size: 24,
+                          ),
+                          SizedBox(width: 3.w),
+                          Expanded(
+                            child: Text(
+                              'New to the app? Tap any demo account above to explore!',
+                              style: GoogleFonts.inter(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.textPrimaryLight,
+                                height: 1.4,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),

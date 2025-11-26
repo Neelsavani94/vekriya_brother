@@ -392,26 +392,161 @@ class _AddEditKarigarScreenState extends State<AddEditKarigarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_screenTitle),
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: CustomIconWidget(
-            iconName: 'arrow_back',
-            color: AppTheme.lightTheme.appBarTheme.foregroundColor!,
-            size: 24,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _isEditing ? '✏️ Edit Worker' : '➕ Add New Worker',
+              style: GoogleFonts.inter(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w800,
+                color: AppTheme.textPrimaryLight,
+              ),
+            ),
+            Text(
+              _isEditing 
+                  ? 'Update worker information' 
+                  : 'Register a new worker',
+              style: GoogleFonts.inter(
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w500,
+                color: AppTheme.textSecondaryLight,
+              ),
+            ),
+          ],
+        ),
+        leading: Container(
+          margin: EdgeInsets.all(2.w),
+          decoration: BoxDecoration(
+            color: AppTheme.primaryLight.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: AppTheme.primaryLight,
+              size: 24,
+            ),
           ),
         ),
         actions: [
           if (!_isDraftSaved)
-            TextButton(
-              onPressed: _saveDraft,
-              child: Text(
-                'Save Draft',
-                style: TextStyle(
-                  color: AppTheme.lightTheme.appBarTheme.foregroundColor,
+            Container(
+              margin: EdgeInsets.only(right: 2.w),
+              child: TextButton.icon(
+                onPressed: _saveDraft,
+                icon: Icon(
+                  Icons.save_outlined,
+                  size: 20,
+                  color: AppTheme.primaryLight,
+                ),
+                label: Text(
+                  'Save Draft',
+                  style: GoogleFonts.inter(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.primaryLight,
+                  ),
+                ),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+                  backgroundColor: AppTheme.primaryLight.withValues(alpha: 0.1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ),
+          Container(
+            margin: EdgeInsets.only(right: 3.w, left: 1.w),
+            decoration: BoxDecoration(
+              color: AppTheme.successLight.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Row(
+                      children: [
+                        Icon(Icons.info_rounded, color: AppTheme.primaryLight),
+                        SizedBox(width: 2.w),
+                        Text(
+                          'Help',
+                          style: GoogleFonts.inter(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                    content: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Required Fields:',
+                            style: GoogleFonts.inter(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.errorLight,
+                            ),
+                          ),
+                          SizedBox(height: 1.h),
+                          Text(
+                            '• Worker Name\n'
+                            '• Mobile Number\n'
+                            '• Employee ID\n'
+                            '• Rate per Piece\n'
+                            '• Joining Date',
+                            style: GoogleFonts.inter(
+                              fontSize: 13.sp,
+                              height: 1.6,
+                            ),
+                          ),
+                          SizedBox(height: 2.h),
+                          Text(
+                            'Optional Information:',
+                            style: GoogleFonts.inter(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SizedBox(height: 1.h),
+                          Text(
+                            '• Profile Photo\n'
+                            '• Address\n'
+                            '• Bank Details\n'
+                            'You can add these later!',
+                            style: GoogleFonts.inter(
+                              fontSize: 13.sp,
+                              height: 1.6,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text('Got it!'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              icon: Icon(
+                Icons.help_outline_rounded,
+                color: AppTheme.successLight,
+                size: 24,
+              ),
+            ),
+          ),
         ],
       ),
       body: Form(
@@ -522,39 +657,86 @@ class _AddEditKarigarScreenState extends State<AddEditKarigarScreen> {
       bottomNavigationBar: Container(
         padding: EdgeInsets.all(4.w),
         decoration: BoxDecoration(
-          color: AppTheme.lightTheme.scaffoldBackgroundColor,
+          color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: AppTheme.shadowLight,
-              blurRadius: 8,
-              offset: Offset(0, -2),
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 12,
+              offset: Offset(0, -4),
             ),
           ],
         ),
         child: SafeArea(
-          child: SizedBox(
-            width: double.infinity,
-            height: 6.h,
+          child: Container(
+            height: 6.5.h,
+            decoration: BoxDecoration(
+              gradient: _isFormValid 
+                  ? AppTheme.getSuccessGradient()
+                  : null,
+              color: _isFormValid ? null : AppTheme.dividerLight,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: _isFormValid 
+                  ? [
+                      BoxShadow(
+                        color: AppTheme.successLight.withValues(alpha: 0.4),
+                        offset: Offset(0, 4),
+                        blurRadius: 12,
+                      ),
+                    ]
+                  : null,
+            ),
             child: ElevatedButton(
               onPressed: _isFormValid && !_isLoading ? _saveKarigar : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                disabledBackgroundColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
               child: _isLoading
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          AppTheme.lightTheme.colorScheme.onPrimary,
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
                         ),
-                      ),
+                        SizedBox(width: 3.w),
+                        Text(
+                          'Saving...',
+                          style: GoogleFonts.inter(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     )
-                  : Text(
-                      _isEditing ? 'Update Karigar' : 'Save Karigar',
-                      style:
-                          AppTheme.lightTheme.textTheme.titleMedium?.copyWith(
-                        color: AppTheme.lightTheme.colorScheme.onPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          _isEditing ? Icons.update_rounded : Icons.check_circle_rounded,
+                          color: _isFormValid ? Colors.white : AppTheme.textDisabledLight,
+                          size: 24,
+                        ),
+                        SizedBox(width: 2.w),
+                        Text(
+                          _isEditing ? 'Update Worker' : 'Save Worker',
+                          style: GoogleFonts.inter(
+                            fontSize: 17.sp,
+                            fontWeight: FontWeight.w800,
+                            color: _isFormValid ? Colors.white : AppTheme.textDisabledLight,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                      ],
                     ),
             ),
           ),

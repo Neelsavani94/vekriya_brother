@@ -300,24 +300,135 @@ class _KarigarListScreenState extends State<KarigarListScreen>
     return Scaffold(
       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('Karigars'),
-        leading: IconButton(
-          onPressed: () =>
-              Navigator.pushReplacementNamed(context, '/main-dashboard'),
-          icon: CustomIconWidget(
-            iconName: 'arrow_back',
-            color: AppTheme.lightTheme.colorScheme.onPrimary,
-            size: 24,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '👷 Workers',
+              style: GoogleFonts.inter(
+                fontSize: 22.sp,
+                fontWeight: FontWeight.w800,
+                color: AppTheme.textPrimaryLight,
+              ),
+            ),
+            Text(
+              'Manage your team',
+              style: GoogleFonts.inter(
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w500,
+                color: AppTheme.textSecondaryLight,
+              ),
+            ),
+          ],
+        ),
+        leading: Container(
+          margin: EdgeInsets.all(2.w),
+          decoration: BoxDecoration(
+            color: AppTheme.primaryLight.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: IconButton(
+            onPressed: () =>
+                Navigator.pushReplacementNamed(context, '/main-dashboard'),
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: AppTheme.primaryLight,
+              size: 24,
+            ),
           ),
         ),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(text: 'Karigars'),
-            Tab(text: 'Daily Work'),
-            Tab(text: 'Upad'),
-            Tab(text: 'Reports'),
-          ],
+        actions: [
+          Container(
+            margin: EdgeInsets.only(right: 3.w),
+            decoration: BoxDecoration(
+              color: AppTheme.successLight.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Row(
+                      children: [
+                        Icon(Icons.help_rounded, color: AppTheme.primaryLight),
+                        SizedBox(width: 2.w),
+                        Text(
+                          'Help',
+                          style: GoogleFonts.inter(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                    content: Text(
+                      '• Tap on a worker to view their profile\n'
+                      '• Use the menu (⋮) for quick actions\n'
+                      '• Search by name or phone number\n'
+                      '• Filter workers by status',
+                      style: GoogleFonts.inter(
+                        fontSize: 13.sp,
+                        height: 1.6,
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text('Got it!'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              icon: Icon(
+                Icons.help_outline_rounded,
+                color: AppTheme.successLight,
+                size: 24,
+              ),
+            ),
+          ),
+        ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(60),
+          child: Container(
+            color: Colors.white,
+            child: TabBar(
+              controller: _tabController,
+              indicatorColor: AppTheme.primaryLight,
+              indicatorWeight: 3,
+              labelColor: AppTheme.primaryLight,
+              unselectedLabelColor: AppTheme.textSecondaryLight,
+              labelStyle: GoogleFonts.inter(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w700,
+              ),
+              unselectedLabelStyle: GoogleFonts.inter(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+              ),
+              tabs: [
+                Tab(
+                  icon: Icon(Icons.groups_rounded, size: 20),
+                  text: 'Workers',
+                ),
+                Tab(
+                  icon: Icon(Icons.work_rounded, size: 20),
+                  text: 'Daily Work',
+                ),
+                Tab(
+                  icon: Icon(Icons.payments_rounded, size: 20),
+                  text: 'Advance',
+                ),
+                Tab(
+                  icon: Icon(Icons.analytics_rounded, size: 20),
+                  text: 'Reports',
+                ),
+              ],
+            ),
+          ),
         ),
       ),
       body: TabBarView(
@@ -542,18 +653,35 @@ class _KarigarListScreenState extends State<KarigarListScreen>
         ],
       ),
       floatingActionButton: _tabController.index == 0
-          ? FloatingActionButton.extended(
-              onPressed: _navigateToAddKarigar,
-              icon: CustomIconWidget(
-                iconName: 'add',
-                size: 24,
-                color: AppTheme.lightTheme.colorScheme.onSecondary,
+          ? Container(
+              decoration: BoxDecoration(
+                gradient: AppTheme.getPrimaryGradient(),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primaryLight.withValues(alpha: 0.4),
+                    offset: Offset(0, 4),
+                    blurRadius: 12,
+                  ),
+                ],
               ),
-              label: Text(
-                'Add Karigar',
-                style: AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
-                  color: AppTheme.lightTheme.colorScheme.onSecondary,
-                  fontWeight: FontWeight.w500,
+              child: FloatingActionButton.extended(
+                onPressed: _navigateToAddKarigar,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                icon: Icon(
+                  Icons.person_add_rounded,
+                  size: 26,
+                  color: Colors.white,
+                ),
+                label: Text(
+                  'Add Worker',
+                  style: GoogleFonts.inter(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    letterSpacing: -0.2,
+                  ),
                 ),
               ),
             )
