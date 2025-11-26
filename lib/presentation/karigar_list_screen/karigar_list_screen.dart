@@ -336,36 +336,92 @@ class _KarigarListScreenState extends State<KarigarListScreen>
 
               // Karigar List
               Expanded(
-                child: _error != null
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.error_outline,
-                              size: 60,
-                              color: AppTheme.lightTheme.colorScheme.error,
+                child                    : _error != null
+                        ? Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(8.w),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(5.w),
+                                    decoration: BoxDecoration(
+                                      color: AppTheme.errorLight.withValues(alpha: 0.1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.error_outline_rounded,
+                                      size: 60,
+                                      color: AppTheme.errorLight,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4.h),
+                                  Text(
+                                    'Unable to Load Karigars',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 22.sp,
+                                      fontWeight: FontWeight.w800,
+                                      color: AppTheme.textPrimaryLight,
+                                      letterSpacing: -0.5,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 2.h),
+                                  Text(
+                                    'We couldn\'t fetch your karigar list. Please check your connection and try again.',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppTheme.textSecondaryLight,
+                                      height: 1.6,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4.h),
+                                  Container(
+                                    width: 60.w,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          AppTheme.primaryLight,
+                                          AppTheme.primaryVariantLight,
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: AppTheme.primaryLight.withValues(alpha: 0.4),
+                                          offset: Offset(0, 6),
+                                          blurRadius: 20,
+                                        ),
+                                      ],
+                                    ),
+                                    child: ElevatedButton.icon(
+                                      onPressed: _loadKarigarData,
+                                      icon: Icon(Icons.refresh_rounded, color: Colors.white),
+                                      label: Text(
+                                        'Try Again',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.transparent,
+                                        shadowColor: Colors.transparent,
+                                        padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 4.w),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        elevation: 0,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            SizedBox(height: 2.h),
-                            Text(
-                              'Error',
-                              style:
-                                  AppTheme.lightTheme.textTheme.headlineSmall,
-                            ),
-                            SizedBox(height: 1.h),
-                            Text(
-                              _error!,
-                              textAlign: TextAlign.center,
-                              style: AppTheme.lightTheme.textTheme.bodyMedium,
-                            ),
-                            SizedBox(height: 3.h),
-                            ElevatedButton(
-                              onPressed: _loadKarigarData,
-                              child: Text('Retry'),
-                            ),
-                          ],
-                        ),
-                      )
+                          )
                     : _isLoading
                         ? Center(
                             child: CircularProgressIndicator(

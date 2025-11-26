@@ -33,37 +33,74 @@ class _PiecesInputWidgetState extends State<PiecesInputWidget> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(4.w),
+      margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h),
+      padding: EdgeInsets.all(5.w),
       decoration: BoxDecoration(
-        color: AppTheme.lightTheme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: _focusNode.hasFocus
-              ? AppTheme.lightTheme.primaryColor
-              : AppTheme.lightTheme.colorScheme.outline,
-          width: _focusNode.hasFocus ? 2 : 1,
+              ? AppTheme.primaryLight
+              : AppTheme.primaryLight.withValues(alpha: 0.2),
+          width: _focusNode.hasFocus ? 2.5 : 1.5,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primaryLight.withValues(alpha: _focusNode.hasFocus ? 0.15 : 0.08),
+            offset: Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Enhanced Header with icon
           Row(
             children: [
-              CustomIconWidget(
-                iconName: 'inventory_2',
-                color: AppTheme.lightTheme.primaryColor,
-                size: 6.w,
+              Container(
+                padding: EdgeInsets.all(2.w),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryLight.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: CustomIconWidget(
+                  iconName: 'inventory_2',
+                  color: AppTheme.primaryLight,
+                  size: 20,
+                ),
               ),
               SizedBox(width: 3.w),
-              Text(
-                'Pieces Count',
-                style: AppTheme.lightTheme.textTheme.labelMedium?.copyWith(
-                  color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Number of Pieces',
+                      style: GoogleFonts.inter(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.textPrimaryLight,
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                    SizedBox(height: 0.3.h),
+                    Text(
+                      'Enter the total pieces completed',
+                      style: GoogleFonts.inter(
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppTheme.textSecondaryLight,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          SizedBox(height: 2.h),
+          SizedBox(height: 3.h),
+          // Enhanced Input Field
           TextField(
             controller: widget.controller,
             focusNode: _focusNode,
@@ -73,35 +110,36 @@ class _PiecesInputWidgetState extends State<PiecesInputWidget> {
               FilteringTextInputFormatter.digitsOnly,
               LengthLimitingTextInputFormatter(6),
             ],
-            style: AppTheme.lightTheme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppTheme.lightTheme.primaryColor,
+            style: GoogleFonts.inter(
+              fontSize: 36.sp,
+              fontWeight: FontWeight.w800,
+              color: AppTheme.primaryLight,
+              letterSpacing: -1,
             ),
             textAlign: TextAlign.center,
             decoration: InputDecoration(
               hintText: '0',
-              hintStyle: AppTheme.lightTheme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: AppTheme.lightTheme.colorScheme.onSurfaceVariant
-                    .withValues(alpha: 0.5),
+              hintStyle: GoogleFonts.inter(
+                fontSize: 36.sp,
+                fontWeight: FontWeight.w800,
+                color: AppTheme.textLabelLight.withValues(alpha: 0.3),
+                letterSpacing: -1,
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide.none,
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide.none,
               ),
               filled: true,
-              fillColor:
-                  AppTheme.lightTheme.primaryColor.withValues(alpha: 0.05),
-              contentPadding:
-                  EdgeInsets.symmetric(vertical: 3.h, horizontal: 4.w),
+              fillColor: AppTheme.primaryLight.withValues(alpha: 0.06),
+              contentPadding: EdgeInsets.symmetric(vertical: 3.5.h, horizontal: 4.w),
             ),
             onChanged: (value) {
               widget.onChanged(value);
@@ -110,35 +148,48 @@ class _PiecesInputWidgetState extends State<PiecesInputWidget> {
               }
             },
           ),
+          // Enhanced Feedback Message
           if (widget.controller.text.isNotEmpty) ...[
-            SizedBox(height: 2.h),
+            SizedBox(height: 2.5.h),
             Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 4.w),
               decoration: BoxDecoration(
-                color: AppTheme.lightTheme.colorScheme.secondaryContainer
-                    .withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(8),
+                gradient: LinearGradient(
+                  colors: [
+                    AppTheme.successLight.withValues(alpha: 0.15),
+                    AppTheme.successLight.withValues(alpha: 0.08),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppTheme.lightTheme.colorScheme.secondary
-                      .withValues(alpha: 0.3),
-                  width: 1,
+                  color: AppTheme.successLight.withValues(alpha: 0.3),
+                  width: 1.5,
                 ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CustomIconWidget(
-                    iconName: 'check_circle',
-                    color: AppTheme.lightTheme.colorScheme.secondary,
-                    size: 5.w,
+                  Container(
+                    padding: EdgeInsets.all(1.5.w),
+                    decoration: BoxDecoration(
+                      color: AppTheme.successLight.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.check_circle_rounded,
+                      color: AppTheme.successLight,
+                      size: 20,
+                    ),
                   ),
-                  SizedBox(width: 2.w),
+                  SizedBox(width: 3.w),
                   Text(
                     '${widget.controller.text} pieces entered',
-                    style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.lightTheme.colorScheme.secondary,
-                      fontWeight: FontWeight.w500,
+                    style: GoogleFonts.inter(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.successLight,
+                      letterSpacing: -0.2,
                     ),
                   ),
                 ],
